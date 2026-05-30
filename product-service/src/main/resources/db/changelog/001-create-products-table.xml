@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001-create-products-table" author="aleksandar">
+        <createTable tableName="products">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="category" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="002-seed-products" author="aleksandar">
+        <insert tableName="products">
+            <column name="name" value="Lenovo ThinkPad E16"/>
+            <column name="category" value="Laptop"/>
+            <column name="price" valueNumeric="899.99"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="iPhone 15"/>
+            <column name="category" value="Phone"/>
+            <column name="price" valueNumeric="999.99"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="Samsung Odyssey G5"/>
+            <column name="category" value="Monitor"/>
+            <column name="price" valueNumeric="299.99"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="Logitech MX Master 3S"/>
+            <column name="category" value="Accessory"/>
+            <column name="price" valueNumeric="109.99"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="Sony WH-1000XM5"/>
+            <column name="category" value="Headphones"/>
+            <column name="price" valueNumeric="349.99"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

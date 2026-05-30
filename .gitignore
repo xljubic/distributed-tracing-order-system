@@ -1,0 +1,25 @@
+# Java / Maven
+target/
+*.class
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Docker volumes / local data
+data/
+
+# k6 / results generated later
+results/*
+!results/.gitkeep
