@@ -1,6 +1,8 @@
 package com.aleksandar.microbench.order.service;
 
 import com.aleksandar.microbench.order.client.InventoryClient;
+import com.aleksandar.microbench.order.client.PaymentClient;
+import com.aleksandar.microbench.order.client.PaymentResponse;
 import com.aleksandar.microbench.order.client.ProductClient;
 import com.aleksandar.microbench.order.client.ProductResponse;
 import com.aleksandar.microbench.order.client.ReserveStockResponse;
@@ -12,12 +14,14 @@ import com.aleksandar.microbench.order.dto.CreateOrderRequest;
 import com.aleksandar.microbench.order.dto.OrderResponse;
 import com.aleksandar.microbench.order.exception.InvalidOrderRequestException;
 import com.aleksandar.microbench.order.exception.OrderNotFoundException;
+import com.aleksandar.microbench.order.exception.PaymentProcessingException;
 import com.aleksandar.microbench.order.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,6 +43,9 @@ class OrderServiceTest {
 
     @Mock
     private InventoryClient inventoryClient;
+
+    @Mock
+    private PaymentClient paymentClient;
 
     @InjectMocks
     private OrderService orderService;
@@ -64,11 +71,29 @@ class OrderServiceTest {
                 new ReserveStockResponse("RESERVED", List.of())
         );
 
-        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(paymentClient.processPayment(any())).thenReturn(
+                new PaymentResponse(
+                        1L,
+                        1L,
+                        "COMPLETED",
+                        new BigDecimal("2799.97"),
+                        null,
+                        LocalDateTime.now(),
+                        LocalDateTime.now()
+                )
+        );
+
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
+            Order order = invocation.getArgument(0);
+            if (order.getId() == null) {
+                ReflectionTestUtils.setField(order, "id", 1L);
+            }
+            return order;
+        });
 
         OrderResponse result = orderService.createOrder(request);
 
-        assertEquals("CREATED", result.status());
+        assertEquals("COMPLETED", result.status());
         assertEquals(new BigDecimal("2799.97"), result.totalAmount());
         assertEquals(2, result.items().size());
 
@@ -130,5 +155,47 @@ class OrderServiceTest {
         );
 
         assertEquals("Order must contain at least one item", exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPaymentFails() {
+        CreateOrderRequest request = new CreateOrderRequest(
+                List.of(new CreateOrderItemRequest(1L, 2))
+        );
+
+        when(productClient.getProductById(1L)).thenReturn(
+                new ProductResponse(1L, "Lenovo ThinkPad E16", "Laptop", new BigDecimal("899.99"))
+        );
+
+        when(inventoryClient.reserveStock(any())).thenReturn(
+                new ReserveStockResponse("RESERVED", List.of())
+        );
+
+        when(paymentClient.processPayment(any())).thenReturn(
+                new PaymentResponse(
+                        1L,
+                        1L,
+                        "FAILED",
+                        new BigDecimal("1799.98"),
+                        "Payment amount exceeds allowed limit",
+                        LocalDateTime.now(),
+                        LocalDateTime.now()
+                )
+        );
+
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
+            Order order = invocation.getArgument(0);
+            if (order.getId() == null) {
+                ReflectionTestUtils.setField(order, "id", 1L);
+            }
+            return order;
+        });
+
+        PaymentProcessingException exception = assertThrows(
+                PaymentProcessingException.class,
+                () -> orderService.createOrder(request)
+        );
+
+        assertEquals("Payment processing failed", exception.getMessage());
     }
 }

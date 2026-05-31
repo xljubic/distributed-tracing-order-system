@@ -49,6 +49,16 @@ public class Order {
         items.add(item);
     }
 
+    public void markCompleted(LocalDateTime updatedAt) {
+        this.status = OrderStatus.COMPLETED;
+        this.updatedAt = updatedAt;
+    }
+
+    public void markFailed(LocalDateTime updatedAt) {
+        this.status = OrderStatus.FAILED;
+        this.updatedAt = updatedAt;
+    }
+
     public Long getId() {
         return id;
     }

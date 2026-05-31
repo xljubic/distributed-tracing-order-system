@@ -33,4 +33,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleInventoryReservationException(InventoryReservationException ex) {
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(PaymentProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlePaymentProcessingException(PaymentProcessingException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }

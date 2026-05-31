@@ -1,7 +1,13 @@
 package com.aleksandar.microbench.order.service;
 
+import com.aleksandar.microbench.order.client.InventoryClient;
+import com.aleksandar.microbench.order.client.PaymentClient;
+import com.aleksandar.microbench.order.client.PaymentResponse;
+import com.aleksandar.microbench.order.client.ProcessPaymentRequest;
 import com.aleksandar.microbench.order.client.ProductClient;
 import com.aleksandar.microbench.order.client.ProductResponse;
+import com.aleksandar.microbench.order.client.ReserveStockItemRequest;
+import com.aleksandar.microbench.order.client.ReserveStockRequest;
 import com.aleksandar.microbench.order.domain.Order;
 import com.aleksandar.microbench.order.domain.OrderItem;
 import com.aleksandar.microbench.order.domain.OrderStatus;
@@ -10,13 +16,10 @@ import com.aleksandar.microbench.order.dto.CreateOrderRequest;
 import com.aleksandar.microbench.order.dto.OrderResponse;
 import com.aleksandar.microbench.order.exception.InvalidOrderRequestException;
 import com.aleksandar.microbench.order.exception.OrderNotFoundException;
+import com.aleksandar.microbench.order.exception.PaymentProcessingException;
 import com.aleksandar.microbench.order.mapper.OrderMapper;
 import com.aleksandar.microbench.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
-
-import com.aleksandar.microbench.order.client.InventoryClient;
-import com.aleksandar.microbench.order.client.ReserveStockItemRequest;
-import com.aleksandar.microbench.order.client.ReserveStockRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,11 +31,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
     private final InventoryClient inventoryClient;
+    private final PaymentClient paymentClient;
 
-    public OrderService(OrderRepository orderRepository, ProductClient productClient, InventoryClient inventoryClient) {
+    public OrderService(
+            OrderRepository orderRepository,
+            ProductClient productClient,
+            InventoryClient inventoryClient,
+            PaymentClient paymentClient) {
         this.orderRepository = orderRepository;
         this.productClient = productClient;
         this.inventoryClient = inventoryClient;
+        this.paymentClient = paymentClient;
     }
 
     public List<OrderResponse> getAllOrders() {
@@ -66,7 +75,26 @@ public class OrderService {
         Order order = new Order(OrderStatus.CREATED, totalAmount, now, now);
         items.forEach(order::addItem);
 
-        return OrderMapper.toResponse(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+
+        try {
+            processPayment(savedOrder.getId(), totalAmount);
+            savedOrder.markCompleted(LocalDateTime.now());
+            return OrderMapper.toResponse(orderRepository.save(savedOrder));
+        } catch (PaymentProcessingException ex) {
+            savedOrder.markFailed(LocalDateTime.now());
+            orderRepository.save(savedOrder);
+            throw ex;
+        }
+    }
+
+    private void processPayment(Long orderId, BigDecimal totalAmount) {
+        PaymentResponse paymentResponse = paymentClient.processPayment(
+                new ProcessPaymentRequest(orderId, totalAmount));
+
+        if (paymentResponse == null || !"COMPLETED".equals(paymentResponse.status())) {
+            throw new PaymentProcessingException("Payment processing failed");
+        }
     }
 
     private void reserveStock(CreateOrderRequest request) {
@@ -76,8 +104,7 @@ public class OrderService {
                         .map(item -> new ReserveStockItemRequest(
                                 item.productId(),
                                 item.quantity()))
-                        .toList()
-                    );
+                        .toList());
 
         inventoryClient.reserveStock(reserveStockRequest);
     }
