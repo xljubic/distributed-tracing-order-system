@@ -21,4 +21,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleInvalidOrderRequestException(InvalidOrderRequestException ex) {
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(ProductNotAvailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleProductNotAvailableException(ProductNotAvailableException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }
