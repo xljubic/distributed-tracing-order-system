@@ -35,7 +35,20 @@ services:
     volumes:
       - inventory_db_data:/var/lib/postgresql/data
 
+  payment-db:
+    image: postgres:16
+    container_name: payment-db
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_password
+    ports:
+      - "5436:5432"
+    volumes:
+      - payment_db_data:/var/lib/postgresql/data
+
 volumes:
   product_db_data:
   order_db_data:
   inventory_db_data:
+  payment_db_data:

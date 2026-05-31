@@ -1,7 +1,6 @@
 package com.aleksandar.microbench.inventory.service;
 
 import com.aleksandar.microbench.inventory.domain.StockItem;
-import com.aleksandar.microbench.inventory.domain.StockReservation;
 import com.aleksandar.microbench.inventory.dto.InventoryItemResponse;
 import com.aleksandar.microbench.inventory.dto.ReserveStockItemRequest;
 import com.aleksandar.microbench.inventory.dto.ReserveStockRequest;
