@@ -27,4 +27,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleProductNotAvailableException(ProductNotAvailableException ex) {
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(InventoryReservationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInventoryReservationException(InventoryReservationException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }

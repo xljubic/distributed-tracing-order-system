@@ -1,7 +1,9 @@
 package com.aleksandar.microbench.order.service;
 
+import com.aleksandar.microbench.order.client.InventoryClient;
 import com.aleksandar.microbench.order.client.ProductClient;
 import com.aleksandar.microbench.order.client.ProductResponse;
+import com.aleksandar.microbench.order.client.ReserveStockResponse;
 import com.aleksandar.microbench.order.domain.Order;
 import com.aleksandar.microbench.order.domain.OrderItem;
 import com.aleksandar.microbench.order.domain.OrderStatus;
@@ -35,6 +37,9 @@ class OrderServiceTest {
     @Mock
     private ProductClient productClient;
 
+    @Mock
+    private InventoryClient inventoryClient;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -53,6 +58,10 @@ class OrderServiceTest {
 
         when(productClient.getProductById(2L)).thenReturn(
                 new ProductResponse(2L, "iPhone 15", "Phone", new BigDecimal("999.99"))
+        );
+
+        when(inventoryClient.reserveStock(any())).thenReturn(
+                new ReserveStockResponse("RESERVED", List.of())
         );
 
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));

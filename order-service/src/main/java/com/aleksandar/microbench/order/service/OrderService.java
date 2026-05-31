@@ -14,6 +14,10 @@ import com.aleksandar.microbench.order.mapper.OrderMapper;
 import com.aleksandar.microbench.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import com.aleksandar.microbench.order.client.InventoryClient;
+import com.aleksandar.microbench.order.client.ReserveStockItemRequest;
+import com.aleksandar.microbench.order.client.ReserveStockRequest;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,10 +27,12 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
+    private final InventoryClient inventoryClient;
 
-    public OrderService(OrderRepository orderRepository, ProductClient productClient) {
+    public OrderService(OrderRepository orderRepository, ProductClient productClient, InventoryClient inventoryClient) {
         this.orderRepository = orderRepository;
         this.productClient = productClient;
+        this.inventoryClient = inventoryClient;
     }
 
     public List<OrderResponse> getAllOrders() {
@@ -50,6 +56,8 @@ public class OrderService {
                 .map(this::toOrderItem)
                 .toList();
 
+        reserveStock(request);
+
         BigDecimal totalAmount = items.stream()
                 .map(OrderItem::getLineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -59,6 +67,19 @@ public class OrderService {
         items.forEach(order::addItem);
 
         return OrderMapper.toResponse(orderRepository.save(order));
+    }
+
+    private void reserveStock(CreateOrderRequest request) {
+        ReserveStockRequest reserveStockRequest = new ReserveStockRequest(
+                request.items()
+                        .stream()
+                        .map(item -> new ReserveStockItemRequest(
+                                item.productId(),
+                                item.quantity()))
+                        .toList()
+                    );
+
+        inventoryClient.reserveStock(reserveStockRequest);
     }
 
     private void validateRequest(CreateOrderRequest request) {
