@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001-create-stock-items-table" author="aleksandar">
+        <createTable tableName="stock_items">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="available_quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reserved_quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="002-create-stock-reservations-table" author="aleksandar">
+        <createTable tableName="stock_reservations">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003-seed-stock-items" author="aleksandar">
+        <insert tableName="stock_items">
+            <column name="product_id" valueNumeric="1"/>
+            <column name="available_quantity" valueNumeric="20"/>
+            <column name="reserved_quantity" valueNumeric="0"/>
+        </insert>
+
+        <insert tableName="stock_items">
+            <column name="product_id" valueNumeric="2"/>
+            <column name="available_quantity" valueNumeric="15"/>
+            <column name="reserved_quantity" valueNumeric="0"/>
+        </insert>
+
+        <insert tableName="stock_items">
+            <column name="product_id" valueNumeric="3"/>
+            <column name="available_quantity" valueNumeric="10"/>
+            <column name="reserved_quantity" valueNumeric="0"/>
+        </insert>
+
+        <insert tableName="stock_items">
+            <column name="product_id" valueNumeric="4"/>
+            <column name="available_quantity" valueNumeric="30"/>
+            <column name="reserved_quantity" valueNumeric="0"/>
+        </insert>
+
+        <insert tableName="stock_items">
+            <column name="product_id" valueNumeric="5"/>
+            <column name="available_quantity" valueNumeric="12"/>
+            <column name="reserved_quantity" valueNumeric="0"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
