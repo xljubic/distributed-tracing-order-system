@@ -47,8 +47,21 @@ services:
     volumes:
       - payment_db_data:/var/lib/postgresql/data
 
+  notification-db:
+    image: postgres:16
+    container_name: notification-db
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: notification_user
+      POSTGRES_PASSWORD: notification_password
+    ports:
+      - "5437:5432"
+    volumes:
+      - notification_db_data:/var/lib/postgresql/data
+
 volumes:
   product_db_data:
   order_db_data:
   inventory_db_data:
   payment_db_data:
+  notification_db_data:

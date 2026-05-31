@@ -1,0 +1,22 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: notification-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5437/notification_db
+    username: notification_user
+    password: notification_password
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml

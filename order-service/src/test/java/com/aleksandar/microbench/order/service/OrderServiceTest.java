@@ -1,6 +1,8 @@
 package com.aleksandar.microbench.order.service;
 
 import com.aleksandar.microbench.order.client.InventoryClient;
+import com.aleksandar.microbench.order.client.NotificationClient;
+import com.aleksandar.microbench.order.client.NotificationResponse;
 import com.aleksandar.microbench.order.client.PaymentClient;
 import com.aleksandar.microbench.order.client.PaymentResponse;
 import com.aleksandar.microbench.order.client.ProductClient;
@@ -13,6 +15,7 @@ import com.aleksandar.microbench.order.dto.CreateOrderItemRequest;
 import com.aleksandar.microbench.order.dto.CreateOrderRequest;
 import com.aleksandar.microbench.order.dto.OrderResponse;
 import com.aleksandar.microbench.order.exception.InvalidOrderRequestException;
+import com.aleksandar.microbench.order.exception.NotificationSendingException;
 import com.aleksandar.microbench.order.exception.OrderNotFoundException;
 import com.aleksandar.microbench.order.exception.PaymentProcessingException;
 import com.aleksandar.microbench.order.repository.OrderRepository;
@@ -47,6 +50,9 @@ class OrderServiceTest {
     @Mock
     private PaymentClient paymentClient;
 
+    @Mock
+    private NotificationClient notificationClient;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -77,6 +83,21 @@ class OrderServiceTest {
                         1L,
                         "COMPLETED",
                         new BigDecimal("2799.97"),
+                        null,
+                        LocalDateTime.now(),
+                        LocalDateTime.now()
+                )
+        );
+
+        when(notificationClient.sendNotification(any())).thenReturn(
+                new NotificationResponse(
+                        1L,
+                        1L,
+                        "ORDER_COMPLETED",
+                        "EMAIL",
+                        "customer@example.com",
+                        "Order 1 has been completed successfully.",
+                        "SENT",
                         null,
                         LocalDateTime.now(),
                         LocalDateTime.now()
@@ -197,5 +218,48 @@ class OrderServiceTest {
         );
 
         assertEquals("Payment processing failed", exception.getMessage());
+    }
+
+    @Test
+    void shouldCreateOrderEvenWhenNotificationFails() {
+        CreateOrderRequest request = new CreateOrderRequest(
+                List.of(new CreateOrderItemRequest(1L, 2))
+        );
+
+        when(productClient.getProductById(1L)).thenReturn(
+                new ProductResponse(1L, "Lenovo ThinkPad E16", "Laptop", new BigDecimal("899.99"))
+        );
+
+        when(inventoryClient.reserveStock(any())).thenReturn(
+                new ReserveStockResponse("RESERVED", List.of())
+        );
+
+        when(paymentClient.processPayment(any())).thenReturn(
+                new PaymentResponse(
+                        1L,
+                        1L,
+                        "COMPLETED",
+                        new BigDecimal("1799.98"),
+                        null,
+                        LocalDateTime.now(),
+                        LocalDateTime.now()
+                )
+        );
+
+        when(notificationClient.sendNotification(any())).thenThrow(new NotificationSendingException());
+
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
+            Order order = invocation.getArgument(0);
+            if (order.getId() == null) {
+                ReflectionTestUtils.setField(order, "id", 1L);
+            }
+            return order;
+        });
+
+        OrderResponse result = orderService.createOrder(request);
+
+        assertEquals("COMPLETED", result.status());
+        assertEquals(new BigDecimal("1799.98"), result.totalAmount());
+        assertEquals(1, result.items().size());
     }
 }

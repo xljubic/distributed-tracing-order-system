@@ -1,6 +1,7 @@
 package com.aleksandar.microbench.order.service;
 
 import com.aleksandar.microbench.order.client.InventoryClient;
+import com.aleksandar.microbench.order.client.NotificationClient;
 import com.aleksandar.microbench.order.client.PaymentClient;
 import com.aleksandar.microbench.order.client.PaymentResponse;
 import com.aleksandar.microbench.order.client.ProcessPaymentRequest;
@@ -8,6 +9,7 @@ import com.aleksandar.microbench.order.client.ProductClient;
 import com.aleksandar.microbench.order.client.ProductResponse;
 import com.aleksandar.microbench.order.client.ReserveStockItemRequest;
 import com.aleksandar.microbench.order.client.ReserveStockRequest;
+import com.aleksandar.microbench.order.client.SendNotificationRequest;
 import com.aleksandar.microbench.order.domain.Order;
 import com.aleksandar.microbench.order.domain.OrderItem;
 import com.aleksandar.microbench.order.domain.OrderStatus;
@@ -15,6 +17,7 @@ import com.aleksandar.microbench.order.dto.CreateOrderItemRequest;
 import com.aleksandar.microbench.order.dto.CreateOrderRequest;
 import com.aleksandar.microbench.order.dto.OrderResponse;
 import com.aleksandar.microbench.order.exception.InvalidOrderRequestException;
+import com.aleksandar.microbench.order.exception.NotificationSendingException;
 import com.aleksandar.microbench.order.exception.OrderNotFoundException;
 import com.aleksandar.microbench.order.exception.PaymentProcessingException;
 import com.aleksandar.microbench.order.mapper.OrderMapper;
@@ -32,16 +35,19 @@ public class OrderService {
     private final ProductClient productClient;
     private final InventoryClient inventoryClient;
     private final PaymentClient paymentClient;
+    private final NotificationClient notificationClient;
 
     public OrderService(
             OrderRepository orderRepository,
             ProductClient productClient,
             InventoryClient inventoryClient,
-            PaymentClient paymentClient) {
+            PaymentClient paymentClient,
+            NotificationClient notificationClient) {
         this.orderRepository = orderRepository;
         this.productClient = productClient;
         this.inventoryClient = inventoryClient;
         this.paymentClient = paymentClient;
+        this.notificationClient = notificationClient;
     }
 
     public List<OrderResponse> getAllOrders() {
@@ -80,7 +86,9 @@ public class OrderService {
         try {
             processPayment(savedOrder.getId(), totalAmount);
             savedOrder.markCompleted(LocalDateTime.now());
-            return OrderMapper.toResponse(orderRepository.save(savedOrder));
+            Order completedOrder = orderRepository.save(savedOrder);
+            sendOrderCompletedNotification(completedOrder);
+            return OrderMapper.toResponse(completedOrder);
         } catch (PaymentProcessingException ex) {
             savedOrder.markFailed(LocalDateTime.now());
             orderRepository.save(savedOrder);
@@ -94,6 +102,20 @@ public class OrderService {
 
         if (paymentResponse == null || !"COMPLETED".equals(paymentResponse.status())) {
             throw new PaymentProcessingException("Payment processing failed");
+        }
+    }
+
+    private void sendOrderCompletedNotification(Order order) {
+        try {
+            notificationClient.sendNotification(
+                    new SendNotificationRequest(
+                            order.getId(),
+                            "ORDER_COMPLETED",
+                            "EMAIL",
+                            "customer@example.com",
+                            "Order " + order.getId() + " has been completed successfully."));
+        } catch (NotificationSendingException ex) {
+            // Notification failure should not break the order flow.
         }
     }
 
