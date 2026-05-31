@@ -1,10 +1,8 @@
 package com.aleksandar.microbench.order.dto;
 
-import java.math.BigDecimal;
 
 public record CreateOrderItemRequest(
         Long productId,
-        String productName,
-        Integer quantity,
-        BigDecimal unitPrice) {
+        Integer quantity
+) {
 }

@@ -1,11 +1,7 @@
 package com.aleksandar.microbench.order.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
+import com.aleksandar.microbench.order.client.ProductClient;
+import com.aleksandar.microbench.order.client.ProductResponse;
 import com.aleksandar.microbench.order.domain.Order;
 import com.aleksandar.microbench.order.domain.OrderItem;
 import com.aleksandar.microbench.order.domain.OrderStatus;
@@ -16,13 +12,21 @@ import com.aleksandar.microbench.order.exception.InvalidOrderRequestException;
 import com.aleksandar.microbench.order.exception.OrderNotFoundException;
 import com.aleksandar.microbench.order.mapper.OrderMapper;
 import com.aleksandar.microbench.order.repository.OrderRepository;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderService {
-    private final OrderRepository orderRepository;
 
-    public OrderService(OrderRepository orderRepository) {
+    private final OrderRepository orderRepository;
+    private final ProductClient productClient;
+
+    public OrderService(OrderRepository orderRepository, ProductClient productClient) {
         this.orderRepository = orderRepository;
+        this.productClient = productClient;
     }
 
     public List<OrderResponse> getAllOrders() {
@@ -74,26 +78,21 @@ public class OrderService {
             throw new InvalidOrderRequestException("Product id must not be null");
         }
 
-        if (item.productName() == null || item.productName().isBlank()) {
-            throw new InvalidOrderRequestException("Product name must not be blank");
-        }
-
         if (item.quantity() == null || item.quantity() <= 0) {
             throw new InvalidOrderRequestException("Order item quantity must be greater than 0");
-        }
-
-        if (item.unitPrice() == null || item.unitPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidOrderRequestException("Order item unit price must be greater than 0");
         }
     }
 
     private OrderItem toOrderItem(CreateOrderItemRequest item) {
-        BigDecimal lineTotal = item.unitPrice().multiply(BigDecimal.valueOf(item.quantity()));
+        ProductResponse product = productClient.getProductById(item.productId());
+
+        BigDecimal lineTotal = product.price().multiply(BigDecimal.valueOf(item.quantity()));
+
         return new OrderItem(
-                item.productId(),
-                item.productName(),
+                product.id(),
+                product.name(),
                 item.quantity(),
-                item.unitPrice(),
+                product.price(),
                 lineTotal);
     }
 }
