@@ -10,6 +10,11 @@ services:
       - "5433:5432"
     volumes:
       - product_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U product_user -d product_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   order-db:
     image: postgres:16
@@ -22,6 +27,11 @@ services:
       - "5434:5432"
     volumes:
       - order_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order_user -d order_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   inventory-db:
     image: postgres:16
@@ -34,6 +44,11 @@ services:
       - "5435:5432"
     volumes:
       - inventory_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory_user -d inventory_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   payment-db:
     image: postgres:16
@@ -46,6 +61,11 @@ services:
       - "5436:5432"
     volumes:
       - payment_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payment_user -d payment_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   notification-db:
     image: postgres:16
@@ -58,6 +78,93 @@ services:
       - "5437:5432"
     volumes:
       - notification_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notification_user -d notification_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  product-service:
+    build:
+      context: ./product-service
+    container_name: product-service
+    depends_on:
+      product-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-db:5432/product_db
+      SPRING_DATASOURCE_USERNAME: product_user
+      SPRING_DATASOURCE_PASSWORD: product_password
+    ports:
+      - "8081:8081"
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+    container_name: inventory-service
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventory_db
+      SPRING_DATASOURCE_USERNAME: inventory_user
+      SPRING_DATASOURCE_PASSWORD: inventory_password
+    ports:
+      - "8082:8082"
+
+  payment-service:
+    build:
+      context: ./payment-service
+    container_name: payment-service
+    depends_on:
+      payment-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payment-db:5432/payment_db
+      SPRING_DATASOURCE_USERNAME: payment_user
+      SPRING_DATASOURCE_PASSWORD: payment_password
+    ports:
+      - "8083:8083"
+
+  notification-service:
+    build:
+      context: ./notification-service
+    container_name: notification-service
+    depends_on:
+      notification-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notification-db:5432/notification_db
+      SPRING_DATASOURCE_USERNAME: notification_user
+      SPRING_DATASOURCE_PASSWORD: notification_password
+    ports:
+      - "8084:8084"
+
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    depends_on:
+      order-db:
+        condition: service_healthy
+      product-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://order-db:5432/order_db
+      SPRING_DATASOURCE_USERNAME: order_user
+      SPRING_DATASOURCE_PASSWORD: order_password
+      SERVICES_PRODUCT_SERVICE_URL: http://product-service:8081
+      SERVICES_INVENTORY_SERVICE_URL: http://inventory-service:8082
+      SERVICES_PAYMENT_SERVICE_URL: http://payment-service:8083
+      SERVICES_NOTIFICATION_SERVICE_URL: http://notification-service:8084
+    ports:
+      - "8080:8080"
 
 volumes:
   product_db_data:
