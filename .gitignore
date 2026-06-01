@@ -23,3 +23,6 @@ data/
 # k6 / results generated later
 results/*
 !results/.gitkeep
+
+# OpenTelemetry Java agent binary
+otel/opentelemetry-javaagent.jar
