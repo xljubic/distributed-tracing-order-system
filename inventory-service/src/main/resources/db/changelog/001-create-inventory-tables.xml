@@ -53,31 +53,31 @@
     <changeSet id="003-seed-stock-items" author="aleksandar">
         <insert tableName="stock_items">
             <column name="product_id" valueNumeric="1"/>
-            <column name="available_quantity" valueNumeric="20"/>
+            <column name="available_quantity" valueNumeric="100000"/>
             <column name="reserved_quantity" valueNumeric="0"/>
         </insert>
 
         <insert tableName="stock_items">
             <column name="product_id" valueNumeric="2"/>
-            <column name="available_quantity" valueNumeric="15"/>
+            <column name="available_quantity" valueNumeric="100000"/>
             <column name="reserved_quantity" valueNumeric="0"/>
         </insert>
 
         <insert tableName="stock_items">
             <column name="product_id" valueNumeric="3"/>
-            <column name="available_quantity" valueNumeric="10"/>
+            <column name="available_quantity" valueNumeric="100000"/>
             <column name="reserved_quantity" valueNumeric="0"/>
         </insert>
 
         <insert tableName="stock_items">
             <column name="product_id" valueNumeric="4"/>
-            <column name="available_quantity" valueNumeric="30"/>
+            <column name="available_quantity" valueNumeric="100000"/>
             <column name="reserved_quantity" valueNumeric="0"/>
         </insert>
 
         <insert tableName="stock_items">
             <column name="product_id" valueNumeric="5"/>
-            <column name="available_quantity" valueNumeric="12"/>
+            <column name="available_quantity" valueNumeric="100000"/>
             <column name="reserved_quantity" valueNumeric="0"/>
         </insert>
     </changeSet>
