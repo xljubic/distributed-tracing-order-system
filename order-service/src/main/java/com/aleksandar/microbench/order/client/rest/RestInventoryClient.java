@@ -9,7 +9,9 @@ import com.aleksandar.microbench.order.client.InventoryClient;
 import com.aleksandar.microbench.order.client.ReserveStockRequest;
 import com.aleksandar.microbench.order.client.ReserveStockResponse;
 import com.aleksandar.microbench.order.exception.InventoryReservationException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+@ConditionalOnProperty(name = "communication.inventory", havingValue = "rest", matchIfMissing = true)
 @Component
 public class RestInventoryClient implements InventoryClient {
     private final RestClient restClient;

@@ -29,3 +29,11 @@ services:
     url: http://localhost:8083
   notification-service:
     url: http://localhost:8084
+
+communication:
+  inventory: rest
+grpc:
+  client:
+    inventory-service:
+      address: static://localhost:9090
+      negotiation-type: plaintext

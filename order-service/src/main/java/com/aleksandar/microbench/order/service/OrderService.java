@@ -24,6 +24,8 @@ import com.aleksandar.microbench.order.mapper.OrderMapper;
 import com.aleksandar.microbench.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +39,8 @@ public class OrderService {
     private final PaymentClient paymentClient;
     private final NotificationClient notificationClient;
 
+  
+
     public OrderService(
             OrderRepository orderRepository,
             ProductClient productClient,
@@ -48,6 +52,7 @@ public class OrderService {
         this.inventoryClient = inventoryClient;
         this.paymentClient = paymentClient;
         this.notificationClient = notificationClient;
+        
     }
 
     public List<OrderResponse> getAllOrders() {
@@ -96,6 +101,8 @@ public class OrderService {
         }
     }
 
+
+
     private void processPayment(Long orderId, BigDecimal totalAmount) {
         PaymentResponse paymentResponse = paymentClient.processPayment(
                 new ProcessPaymentRequest(orderId, totalAmount));
@@ -130,6 +137,8 @@ public class OrderService {
 
         inventoryClient.reserveStock(reserveStockRequest);
     }
+
+
 
     private void validateRequest(CreateOrderRequest request) {
         if (request == null || request.items() == null || request.items().isEmpty()) {

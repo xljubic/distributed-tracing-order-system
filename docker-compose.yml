@@ -133,6 +133,7 @@ services:
       - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8082:8082"
+      - "9090:9090"
 
   payment-service:
     build:
@@ -216,6 +217,9 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
+      COMMUNICATION_INVENTORY: grpc
+      GRPC_CLIENT_INVENTORY_SERVICE_ADDRESS: static://inventory-service:9090
+      GRPC_CLIENT_INVENTORY_SERVICE_NEGOTIATION_TYPE: plaintext
     volumes:
       - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
