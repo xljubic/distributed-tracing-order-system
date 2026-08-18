@@ -9,7 +9,9 @@ import com.aleksandar.microbench.order.client.PaymentClient;
 import com.aleksandar.microbench.order.client.PaymentResponse;
 import com.aleksandar.microbench.order.client.ProcessPaymentRequest;
 import com.aleksandar.microbench.order.exception.PaymentProcessingException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+@ConditionalOnProperty(name = "communication.payment", havingValue = "rest", matchIfMissing = true)
 @Component
 public class RestPaymentClient implements PaymentClient {
 

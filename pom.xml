@@ -16,6 +16,7 @@
     <description>Distributed order processing system for benchmarking microservice communication models</description>
 
     <modules>
+        <module>grpc-contracts</module>
         <module>product-service</module>
         <module>order-service</module>
         <module>inventory-service</module>

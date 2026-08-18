@@ -7,11 +7,10 @@ import com.aleksandar.microbench.inventory.grpc.ReserveStockResponseGrpc;
 import com.aleksandar.microbench.order.client.InventoryClient;
 import com.aleksandar.microbench.order.client.ReserveStockRequest;
 import com.aleksandar.microbench.order.client.ReserveStockResponse;
+import com.aleksandar.microbench.order.client.ReservedStockItemResponse;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @ConditionalOnProperty(
@@ -39,6 +38,14 @@ public class GrpcInventoryClient implements InventoryClient {
 
         ReserveStockResponseGrpc grpcResponse = inventoryStub.reserveStock(grpcRequest);
 
-        return new ReserveStockResponse(grpcResponse.getStatus(), List.of());
+        return new ReserveStockResponse(
+                grpcResponse.getStatus(),
+                grpcResponse.getItemsList()
+                        .stream()
+                        .map(item -> new ReservedStockItemResponse(
+                                item.getProductId(),
+                                item.getQuantity(),
+                                item.getStatus()))
+                        .toList());
     }
 }

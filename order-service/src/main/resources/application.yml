@@ -31,7 +31,10 @@ services:
     url: http://localhost:8084
 
 communication:
+  product: rest
   inventory: rest
+  payment: rest
+  notification: rest
 grpc:
   client:
     inventory-service:

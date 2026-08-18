@@ -38,6 +38,14 @@ public class InventoryGrpcService extends InventoryReservationServiceGrpc.Invent
             responseObserver.onNext(
                     ReserveStockResponseGrpc.newBuilder()
                             .setStatus(response.status())
+                            .addAllItems(response.items()
+                                    .stream()
+                                    .map(item -> ReservedStockItemGrpc.newBuilder()
+                                            .setProductId(item.productId())
+                                            .setQuantity(item.quantity())
+                                            .setStatus(item.status())
+                                            .build())
+                                    .toList())
                             .build()
             );
             responseObserver.onCompleted();

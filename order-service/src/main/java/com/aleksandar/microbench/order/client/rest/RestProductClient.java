@@ -9,7 +9,9 @@ import org.springframework.web.client.RestClientException;
 import com.aleksandar.microbench.order.client.ProductClient;
 import com.aleksandar.microbench.order.client.ProductResponse;
 import com.aleksandar.microbench.order.exception.ProductNotAvailableException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+@ConditionalOnProperty(name = "communication.product", havingValue = "rest", matchIfMissing = true)
 @Component
 public class RestProductClient implements ProductClient {
 

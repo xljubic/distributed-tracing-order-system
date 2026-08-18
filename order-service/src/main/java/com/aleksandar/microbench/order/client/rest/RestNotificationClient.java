@@ -9,7 +9,9 @@ import com.aleksandar.microbench.order.client.NotificationClient;
 import com.aleksandar.microbench.order.client.NotificationResponse;
 import com.aleksandar.microbench.order.client.SendNotificationRequest;
 import com.aleksandar.microbench.order.exception.NotificationSendingException;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+@ConditionalOnProperty(name = "communication.notification", havingValue = "rest", matchIfMissing = true)
 @Component
 public class RestNotificationClient implements NotificationClient {
 
