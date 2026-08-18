@@ -84,9 +84,22 @@ services:
       timeout: 5s
       retries: 10
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.60
+    container_name: jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+
   product-service:
     build:
-      context: ./product-service
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: product-service
     container_name: product-service
     depends_on:
       product-db:
@@ -104,14 +117,16 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
-    volumes:
-      - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8081:8081"
+    restart: unless-stopped
 
   inventory-service:
     build:
-      context: ./inventory-service
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: inventory-service
     container_name: inventory-service
     depends_on:
       inventory-db:
@@ -129,15 +144,17 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
-    volumes:
-      - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8082:8082"
       - "9090:9090"
+    restart: unless-stopped
 
   payment-service:
     build:
-      context: ./payment-service
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: payment-service
     container_name: payment-service
     depends_on:
       payment-db:
@@ -155,14 +172,16 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
-    volumes:
-      - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8083:8083"
+    restart: unless-stopped
 
   notification-service:
     build:
-      context: ./notification-service
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: notification-service
     container_name: notification-service
     depends_on:
       notification-db:
@@ -180,14 +199,16 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
-    volumes:
-      - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8084:8084"
+    restart: unless-stopped
 
   order-service-rest:
     build:
-      context: ./order-service
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: order-service
     container_name: order-service-rest
     depends_on:
       order-db:
@@ -207,12 +228,10 @@ services:
       SPRING_DATASOURCE_USERNAME: order_user
       SPRING_DATASOURCE_PASSWORD: order_password
       SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/db.changelog-master.xml
-
       SERVICES_PRODUCT_SERVICE_URL: http://product-service:8081
       SERVICES_INVENTORY_SERVICE_URL: http://inventory-service:8082
       SERVICES_PAYMENT_SERVICE_URL: http://payment-service:8083
       SERVICES_NOTIFICATION_SERVICE_URL: http://notification-service:8084
-
       JAVA_TOOL_OPTIONS: "-javaagent:/otel/opentelemetry-javaagent.jar"
       OTEL_SERVICE_NAME: order-service-rest
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
@@ -220,18 +239,19 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
-
       COMMUNICATION_INVENTORY: rest
       GRPC_CLIENT_INVENTORY_SERVICE_ADDRESS: static://inventory-service:9090
       GRPC_CLIENT_INVENTORY_SERVICE_NEGOTIATION_TYPE: plaintext
-    volumes:
-      - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8080:8080"
+    restart: unless-stopped
 
   order-service-grpc:
     build:
-      context: ./order-service
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: order-service
     container_name: order-service-grpc
     depends_on:
       order-db:
@@ -251,12 +271,10 @@ services:
       SPRING_DATASOURCE_USERNAME: order_user
       SPRING_DATASOURCE_PASSWORD: order_password
       SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/db.changelog-master.xml
-
       SERVICES_PRODUCT_SERVICE_URL: http://product-service:8081
       SERVICES_INVENTORY_SERVICE_URL: http://inventory-service:8082
       SERVICES_PAYMENT_SERVICE_URL: http://payment-service:8083
       SERVICES_NOTIFICATION_SERVICE_URL: http://notification-service:8084
-
       JAVA_TOOL_OPTIONS: "-javaagent:/otel/opentelemetry-javaagent.jar"
       OTEL_SERVICE_NAME: order-service-grpc
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
@@ -264,23 +282,12 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
-
       COMMUNICATION_INVENTORY: grpc
       GRPC_CLIENT_INVENTORY_SERVICE_ADDRESS: static://inventory-service:9090
       GRPC_CLIENT_INVENTORY_SERVICE_NEGOTIATION_TYPE: plaintext
-    volumes:
-      - ./otel/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     ports:
       - "8090:8080"
-  jaeger:
-      image: jaegertracing/all-in-one:1.60
-      container_name: jaeger
-      ports:
-        - "16686:16686"
-        - "4317:4317"
-        - "4318:4318"
-      environment:
-        COLLECTOR_OTLP_ENABLED: "true"
+    restart: unless-stopped
 
 volumes:
   product_db_data:

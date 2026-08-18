@@ -26,3 +26,5 @@ results/*
 
 # OpenTelemetry Java agent binary
 otel/opentelemetry-javaagent.jar
+# Generated k6 dashboard screenshots
+screenshots/

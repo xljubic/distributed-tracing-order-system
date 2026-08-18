@@ -1,0 +1,12 @@
+.git
+.github
+.idea
+.vscode
+**/target
+results
+otel/*.jar
+*.log
+.DS_Store
+Thumbs.db
+
+screenshots

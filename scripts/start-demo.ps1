@@ -1,4 +1,5 @@
 Write-Host "Checking Docker Desktop..." -ForegroundColor Cyan
+
 docker version
 
 if ($LASTEXITCODE -ne 0) {
@@ -6,30 +7,53 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "Building Maven project..." -ForegroundColor Cyan
-mvn package -DskipTests
+Write-Host "Creating results folders..." -ForegroundColor Cyan
+
+New-Item -ItemType Directory -Force "results\demo" | Out-Null
+New-Item -ItemType Directory -Force "results\rest" | Out-Null
+New-Item -ItemType Directory -Force "results\grpc-inventory" | Out-Null
+
+Write-Host "Stopping old Docker Compose services..." -ForegroundColor Cyan
+
+docker compose down --remove-orphans
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Maven build failed. Fix the build first, then run this script again." -ForegroundColor Red
+    Write-Host "Docker Compose down failed." -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "Building Docker images..." -ForegroundColor Cyan
+
+docker compose build
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Docker Compose build failed." -ForegroundColor Red
     exit 1
 }
 
 Write-Host "Starting Docker Compose services..." -ForegroundColor Cyan
-docker compose down
-docker compose up -d --build
+
+docker compose up -d
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Docker Compose failed." -ForegroundColor Red
+    Write-Host "Docker Compose up failed." -ForegroundColor Red
     exit 1
 }
 
 Write-Host "Waiting for services to start..." -ForegroundColor Cyan
+
 Start-Sleep -Seconds 70
 
 Write-Host "Current Docker status:" -ForegroundColor Cyan
+
 docker compose ps
 
 Write-Host ""
-Write-Host "REST order-service:        http://localhost:8080/swagger-ui/index.html" -ForegroundColor Green
-Write-Host "gRPC inventory variant:    http://localhost:8090/swagger-ui/index.html" -ForegroundColor Green
-Write-Host "Jaeger:                    http://localhost:16686" -ForegroundColor Green
+Write-Host "REST order-service: http://localhost:8080/swagger-ui/index.html" -ForegroundColor Green
+Write-Host "gRPC inventory variant: http://localhost:8090/swagger-ui/index.html" -ForegroundColor Green
+Write-Host "Jaeger: http://localhost:16686" -ForegroundColor Green
+Write-Host ""
+Write-Host "Smoke REST: .\scripts\smoke-rest.ps1" -ForegroundColor Yellow
+Write-Host "Smoke gRPC-inventory: .\scripts\smoke-grpc.ps1" -ForegroundColor Yellow
+Write-Host "REST stress dashboard: .\scripts\run-rest-03-stress-dashboard.ps1" -ForegroundColor Yellow
+Write-Host "gRPC-inventory stress dashboard: .\scripts\run-grpc-03-stress-dashboard.ps1" -ForegroundColor Yellow
