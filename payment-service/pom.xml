@@ -48,6 +48,18 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-server-spring-boot-starter</artifactId>
+            <version>3.1.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aleksandar.microbench</groupId>
+            <artifactId>grpc-contracts</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

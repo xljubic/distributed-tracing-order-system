@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package notification;
+
+option java_multiple_files = true;
+option java_package = "com.aleksandar.microbench.notification.grpc";
+option java_outer_classname = "NotificationServiceProto";
+
+service NotificationSendingService {
+  rpc SendNotification (SendNotificationRequestGrpc) returns (NotificationResponseGrpc);
+}
+
+message SendNotificationRequestGrpc {
+  int64 order_id = 1;
+  string type = 2;
+  string channel = 3;
+  string recipient = 4;
+  string message = 5;
+}
+
+message NotificationResponseGrpc {
+  int64 id = 1;
+  int64 order_id = 2;
+  string type = 3;
+  string channel = 4;
+  string recipient = 5;
+  string message = 6;
+  string status = 7;
+  string failure_reason = 8;
+  string created_at = 9;
+  string sent_at = 10;
+}

@@ -12,6 +12,7 @@ Write-Host "Creating results folders..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force "results\demo" | Out-Null
 New-Item -ItemType Directory -Force "results\rest" | Out-Null
 New-Item -ItemType Directory -Force "results\grpc-inventory" | Out-Null
+New-Item -ItemType Directory -Force "results\full-grpc" | Out-Null
 
 Write-Host "Stopping old Docker Compose services..." -ForegroundColor Cyan
 
@@ -51,9 +52,11 @@ docker compose ps
 Write-Host ""
 Write-Host "REST order-service: http://localhost:8080/swagger-ui/index.html" -ForegroundColor Green
 Write-Host "gRPC inventory variant: http://localhost:8090/swagger-ui/index.html" -ForegroundColor Green
+Write-Host "Full gRPC variant: http://localhost:8100/swagger-ui/index.html" -ForegroundColor Green
 Write-Host "Jaeger: http://localhost:16686" -ForegroundColor Green
 Write-Host ""
 Write-Host "Smoke REST: .\scripts\smoke-rest.ps1" -ForegroundColor Yellow
 Write-Host "Smoke gRPC-inventory: .\scripts\smoke-grpc.ps1" -ForegroundColor Yellow
+Write-Host "Smoke full gRPC: .\scripts\smoke-full-grpc.ps1" -ForegroundColor Yellow
 Write-Host "REST stress dashboard: .\scripts\run-rest-03-stress-dashboard.ps1" -ForegroundColor Yellow
 Write-Host "gRPC-inventory stress dashboard: .\scripts\run-grpc-03-stress-dashboard.ps1" -ForegroundColor Yellow

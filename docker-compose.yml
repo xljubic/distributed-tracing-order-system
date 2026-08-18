@@ -119,6 +119,7 @@ services:
       OTEL_LOGS_EXPORTER: none
     ports:
       - "8081:8081"
+      - "9091:9091"
     restart: unless-stopped
 
   inventory-service:
@@ -174,6 +175,7 @@ services:
       OTEL_LOGS_EXPORTER: none
     ports:
       - "8083:8083"
+      - "9092:9092"
     restart: unless-stopped
 
   notification-service:
@@ -201,6 +203,7 @@ services:
       OTEL_LOGS_EXPORTER: none
     ports:
       - "8084:8084"
+      - "9093:9093"
     restart: unless-stopped
 
   order-service-rest:
@@ -239,9 +242,18 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
+      COMMUNICATION_PRODUCT: rest
       COMMUNICATION_INVENTORY: rest
+      COMMUNICATION_PAYMENT: rest
+      COMMUNICATION_NOTIFICATION: rest
+      GRPC_CLIENT_PRODUCT_SERVICE_ADDRESS: static://product-service:9091
       GRPC_CLIENT_INVENTORY_SERVICE_ADDRESS: static://inventory-service:9090
       GRPC_CLIENT_INVENTORY_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_PRODUCT_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_PAYMENT_SERVICE_ADDRESS: static://payment-service:9092
+      GRPC_CLIENT_PAYMENT_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_NOTIFICATION_SERVICE_ADDRESS: static://notification-service:9093
+      GRPC_CLIENT_NOTIFICATION_SERVICE_NEGOTIATION_TYPE: plaintext
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -282,11 +294,72 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
+      COMMUNICATION_PRODUCT: rest
       COMMUNICATION_INVENTORY: grpc
+      COMMUNICATION_PAYMENT: rest
+      COMMUNICATION_NOTIFICATION: rest
+      GRPC_CLIENT_PRODUCT_SERVICE_ADDRESS: static://product-service:9091
       GRPC_CLIENT_INVENTORY_SERVICE_ADDRESS: static://inventory-service:9090
       GRPC_CLIENT_INVENTORY_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_PRODUCT_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_PAYMENT_SERVICE_ADDRESS: static://payment-service:9092
+      GRPC_CLIENT_PAYMENT_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_NOTIFICATION_SERVICE_ADDRESS: static://notification-service:9093
+      GRPC_CLIENT_NOTIFICATION_SERVICE_NEGOTIATION_TYPE: plaintext
     ports:
       - "8090:8080"
+    restart: unless-stopped
+
+  order-service-full-grpc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: order-service
+    container_name: order-service-full-grpc
+    depends_on:
+      order-db:
+        condition: service_healthy
+      product-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+      jaeger:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://order-db:5432/order_db
+      SPRING_DATASOURCE_USERNAME: order_user
+      SPRING_DATASOURCE_PASSWORD: order_password
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/db.changelog-master.xml
+      SERVICES_PRODUCT_SERVICE_URL: http://product-service:8081
+      SERVICES_INVENTORY_SERVICE_URL: http://inventory-service:8082
+      SERVICES_PAYMENT_SERVICE_URL: http://payment-service:8083
+      SERVICES_NOTIFICATION_SERVICE_URL: http://notification-service:8084
+      JAVA_TOOL_OPTIONS: "-javaagent:/otel/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: order-service-full-grpc
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+      COMMUNICATION_PRODUCT: grpc
+      COMMUNICATION_INVENTORY: grpc
+      COMMUNICATION_PAYMENT: grpc
+      COMMUNICATION_NOTIFICATION: grpc
+      GRPC_CLIENT_PRODUCT_SERVICE_ADDRESS: static://product-service:9091
+      GRPC_CLIENT_PRODUCT_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_INVENTORY_SERVICE_ADDRESS: static://inventory-service:9090
+      GRPC_CLIENT_INVENTORY_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_PAYMENT_SERVICE_ADDRESS: static://payment-service:9092
+      GRPC_CLIENT_PAYMENT_SERVICE_NEGOTIATION_TYPE: plaintext
+      GRPC_CLIENT_NOTIFICATION_SERVICE_ADDRESS: static://notification-service:9093
+      GRPC_CLIENT_NOTIFICATION_SERVICE_NEGOTIATION_TYPE: plaintext
+    ports:
+      - "8100:8080"
     restart: unless-stopped
 
 volumes:

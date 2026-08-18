@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package product;
+
+option java_multiple_files = true;
+option java_package = "com.aleksandar.microbench.product.grpc";
+option java_outer_classname = "ProductServiceProto";
+
+service ProductLookupService {
+  rpc GetProductById (GetProductByIdRequestGrpc) returns (ProductResponseGrpc);
+}
+
+message GetProductByIdRequestGrpc {
+  int64 product_id = 1;
+}
+
+message ProductResponseGrpc {
+  int64 id = 1;
+  string name = 2;
+  string category = 3;
+  string price = 4;
+}

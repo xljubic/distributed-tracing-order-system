@@ -37,6 +37,15 @@ communication:
   notification: rest
 grpc:
   client:
+    product-service:
+      address: static://localhost:9091
+      negotiation-type: plaintext
     inventory-service:
       address: static://localhost:9090
+      negotiation-type: plaintext
+    payment-service:
+      address: static://localhost:9092
+      negotiation-type: plaintext
+    notification-service:
+      address: static://localhost:9093
       negotiation-type: plaintext
