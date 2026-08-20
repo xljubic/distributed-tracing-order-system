@@ -93,8 +93,23 @@ foreach ($currentModel in $modelsToRun) {
 
             Write-Host "[$currentModel/$currentScenario run $run/$Runs] Running measured scenario..." -ForegroundColor Yellow
             & k6 run "--summary-export=$resultPath" $scenarioPath
-            if ($LASTEXITCODE -ne 0) {
-                throw "Measured scenario failed for $currentModel/$currentScenario run $run."
+
+            $k6ExitCode = $LASTEXITCODE
+            if (-not (Test-Path $resultPath)) {
+                throw "Measured scenario failed for $currentModel/$currentScenario run ${run}: k6 did not create a summary JSON file."
+            }
+
+            try {
+                $summary = Get-Content $resultPath -Raw | ConvertFrom-Json
+                if ($null -eq $summary.metrics -or $null -eq $summary.metrics.http_req_duration) {
+                    throw "Required k6 metrics are missing."
+                }
+            } catch {
+                throw "Measured scenario failed for $currentModel/$currentScenario run ${run}: summary JSON is missing or invalid. $($_.Exception.Message)"
+            }
+
+            if ($k6ExitCode -ne 0) {
+                Write-Warning "Thresholds failed for $currentModel/$currentScenario run $run/$Runs, result preserved, continuing."
             }
         }
     }
