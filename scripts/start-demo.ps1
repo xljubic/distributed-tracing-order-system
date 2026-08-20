@@ -27,7 +27,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "Building Docker images..." -ForegroundColor Cyan
 
-docker compose build
+docker compose --profile rest --profile partial-grpc --profile full-grpc --profile async --profile hybrid build
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Docker Compose build failed." -ForegroundColor Red
@@ -36,7 +36,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "Starting Docker Compose services..." -ForegroundColor Cyan
 
-docker compose up -d
+docker compose --profile rest --profile partial-grpc --profile full-grpc --profile async --profile hybrid up -d
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Docker Compose up failed." -ForegroundColor Red

@@ -15,7 +15,7 @@ Service ports are product `8081`/`9091`, inventory `8082`/`9090`, payment `8083`
 Start the stack:
 
 ```powershell
-docker compose up -d --build
+docker compose --profile rest --profile partial-grpc --profile full-grpc --profile async --profile hybrid up -d --build
 ```
 
 Run smoke checks:
@@ -38,3 +38,37 @@ powershell -ExecutionPolicy Bypass -File scripts/run-grpc-01-smoke-dashboard.ps1
 Ports: `8080` REST, `8090` partial gRPC, `8100` full gRPC, `8110` async, `8120` hybrid, `16686` Jaeger, `9094` Kafka host access.
 
 Jaeger UI: http://localhost:16686
+
+## Final experiment workflow
+
+Final measurements must run one model at a time. Compose profiles isolate the selected order-service variant while reusing the databases, product, inventory, payment, notification, Kafka, and Jaeger infrastructure.
+
+Reset the five PostgreSQL databases to the repository seed state, then start one model and warm it with exactly 20 successful order requests:
+
+```powershell
+.\scripts\reset-experiment.ps1
+.\scripts\start-model.ps1 -Model rest
+.\scripts\warmup-model.ps1 -Model rest -Requests 20
+```
+
+Run the five measured scenarios with five repetitions for one model:
+
+```powershell
+.\scripts\run-final-experiments.ps1 -Model rest -Runs 5
+```
+
+Use `-Model all` to run every model sequentially. Use `-Scenario baseline`, `stress`, `spike`, `endurance`, or `edge` to run one scenario, or `-Scenario all` for the default complete set. Each repetition performs the same configured number of successful warm-up requests before measurement; use `-WarmupRequests` to change the default of 20. Each session is stored under `results/final/<timestamp>/` with `metadata.json`; smoke and dashboard scripts remain separate.
+
+Aggregate a session using Python where available:
+
+```powershell
+python .\scripts\aggregate-results.py results\final\<timestamp>
+```
+
+On Windows without Python, use the equivalent PowerShell aggregator:
+
+```powershell
+.\scripts\aggregate-results.ps1 -ResultsFolder results\final\<timestamp>
+```
+
+Both aggregators produce `raw-results.csv`, `aggregated-results.csv`, and `comparison.csv`. Use `.\scripts\trace-check.ps1` after representative runs to query the expected Jaeger service names and trace endpoints.

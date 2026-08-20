@@ -236,6 +236,7 @@ services:
     restart: unless-stopped
 
   order-service-rest:
+    profiles: ["rest"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -288,6 +289,7 @@ services:
     restart: unless-stopped
 
   order-service-grpc:
+    profiles: ["partial-grpc"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -340,6 +342,7 @@ services:
     restart: unless-stopped
 
   order-service-full-grpc:
+    profiles: ["full-grpc"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -392,6 +395,7 @@ services:
     restart: unless-stopped
 
   order-service-async:
+    profiles: ["async"]
     build:
       context: .
       dockerfile: Dockerfile
@@ -436,6 +440,7 @@ services:
     restart: unless-stopped
 
   order-service-hybrid:
+    profiles: ["hybrid"]
     build:
       context: .
       dockerfile: Dockerfile
