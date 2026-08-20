@@ -13,6 +13,8 @@ New-Item -ItemType Directory -Force "results\demo" | Out-Null
 New-Item -ItemType Directory -Force "results\rest" | Out-Null
 New-Item -ItemType Directory -Force "results\grpc-inventory" | Out-Null
 New-Item -ItemType Directory -Force "results\full-grpc" | Out-Null
+New-Item -ItemType Directory -Force "results\async" | Out-Null
+New-Item -ItemType Directory -Force "results\hybrid" | Out-Null
 
 Write-Host "Stopping old Docker Compose services..." -ForegroundColor Cyan
 
@@ -50,13 +52,17 @@ Write-Host "Current Docker status:" -ForegroundColor Cyan
 docker compose ps
 
 Write-Host ""
-Write-Host "REST order-service: http://localhost:8080/swagger-ui/index.html" -ForegroundColor Green
-Write-Host "gRPC inventory variant: http://localhost:8090/swagger-ui/index.html" -ForegroundColor Green
-Write-Host "Full gRPC variant: http://localhost:8100/swagger-ui/index.html" -ForegroundColor Green
+Write-Host "REST: http://localhost:8080" -ForegroundColor Green
+Write-Host "Partial gRPC: http://localhost:8090" -ForegroundColor Green
+Write-Host "Full gRPC: http://localhost:8100" -ForegroundColor Green
+Write-Host "Async: http://localhost:8110" -ForegroundColor Green
+Write-Host "Hybrid: http://localhost:8120" -ForegroundColor Green
 Write-Host "Jaeger: http://localhost:16686" -ForegroundColor Green
 Write-Host ""
 Write-Host "Smoke REST: .\scripts\smoke-rest.ps1" -ForegroundColor Yellow
 Write-Host "Smoke gRPC-inventory: .\scripts\smoke-grpc.ps1" -ForegroundColor Yellow
 Write-Host "Smoke full gRPC: .\scripts\smoke-full-grpc.ps1" -ForegroundColor Yellow
+Write-Host "Smoke async: .\scripts\smoke-async.ps1" -ForegroundColor Yellow
+Write-Host "Smoke hybrid: .\scripts\smoke-hybrid.ps1" -ForegroundColor Yellow
 Write-Host "REST stress dashboard: .\scripts\run-rest-03-stress-dashboard.ps1" -ForegroundColor Yellow
 Write-Host "gRPC-inventory stress dashboard: .\scripts\run-grpc-03-stress-dashboard.ps1" -ForegroundColor Yellow

@@ -20,6 +20,9 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
+  kafka:
+    bootstrap-servers: localhost:9094
+
 services:
   product-service:
     url: http://localhost:8081
@@ -35,6 +38,9 @@ communication:
   inventory: rest
   payment: rest
   notification: rest
+
+events:
+  order-completed-topic: order.completed
 grpc:
   client:
     product-service:

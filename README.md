@@ -1,20 +1,16 @@
 # Microservice Performance Comparison
 
-Small Java 17 / Spring Boot benchmark system for comparing communication styles across five services:
+Small Java 17 / Spring Boot benchmark system for comparing distributed communication styles. Every model exposes the same external `POST /api/orders` API; only internal communication changes.
 
-| Service | HTTP port | Role |
+| Model | External port | Internal communication |
 | --- | ---: | --- |
-| order-service REST baseline | 8080 | External `POST /api/orders` orchestration over REST |
-| order-service gRPC-inventory variant | 8090 | Same external API, inventory call over gRPC |
-| order-service full-gRPC variant | 8100 | Same external API, all internal calls over gRPC |
-| product-service | 8081 | Product lookup |
-| inventory-service | 8082 / 9090 | REST inventory API and current gRPC inventory reservation |
-| payment-service | 8083 | Payment processing |
-| notification-service | 8084 | Notification sending |
+| REST | 8080 | Product, inventory, payment, and notification over REST |
+| Partial gRPC | 8090 | Inventory over gRPC; other calls over REST |
+| Full gRPC | 8100 | Product, inventory, payment, and notification over gRPC |
+| Async/event-driven | 8110 | REST synchronous critical path + Kafka notification |
+| Hybrid | 8120 | gRPC synchronous critical path + Kafka notification |
 
-Internal gRPC ports are product `9091`, inventory `9090`, payment `9092`, and notification `9093`.
-
-The REST baseline keeps all service-to-service calls on REST. The partial gRPC variant uses gRPC only for `order-service -> inventory-service`. The full gRPC variant keeps the external HTTP `POST /api/orders` API but uses gRPC for product, inventory, payment, and notification calls.
+Service ports are product `8081`/`9091`, inventory `8082`/`9090`, payment `8083`/`9092`, and notification `8084`/`9093`. The Docker-internal Kafka broker is `kafka:9092`; optional host access is `localhost:9094`.
 
 Start the stack:
 
@@ -28,6 +24,8 @@ Run smoke checks:
 powershell -ExecutionPolicy Bypass -File scripts/smoke-rest.ps1
 powershell -ExecutionPolicy Bypass -File scripts/smoke-grpc.ps1
 powershell -ExecutionPolicy Bypass -File scripts/smoke-full-grpc.ps1
+powershell -ExecutionPolicy Bypass -File scripts/smoke-async.ps1
+powershell -ExecutionPolicy Bypass -File scripts/smoke-hybrid.ps1
 ```
 
 Dashboard smoke scripts:
@@ -36,5 +34,7 @@ Dashboard smoke scripts:
 powershell -ExecutionPolicy Bypass -File scripts/run-rest-01-smoke-dashboard.ps1
 powershell -ExecutionPolicy Bypass -File scripts/run-grpc-01-smoke-dashboard.ps1
 ```
+
+Ports: `8080` REST, `8090` partial gRPC, `8100` full gRPC, `8110` async, `8120` hybrid, `16686` Jaeger, `9094` Kafka host access.
 
 Jaeger UI: http://localhost:16686

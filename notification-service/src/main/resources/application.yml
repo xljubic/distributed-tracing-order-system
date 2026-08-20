@@ -20,6 +20,15 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+
+events:
+  order-completed-topic: order.completed
 grpc:
   server:
     port: 9093
