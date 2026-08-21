@@ -38,6 +38,41 @@ function Get-ToolVersion([string]$command, [string[]]$arguments) {
     }
 }
 
+function Wait-ForJaegerReady {
+    Write-Host "Waiting for Jaeger to become ready before warm-up..." -ForegroundColor Cyan
+    $deadline = (Get-Date).AddSeconds(60)
+    while ((Get-Date) -lt $deadline) {
+        try {
+            $response = Invoke-WebRequest -Uri "http://localhost:16686/api/services" -UseBasicParsing -TimeoutSec 5
+            if ($response.StatusCode -eq 200) {
+                return
+            }
+        } catch {
+            Start-Sleep -Seconds 2
+        }
+    }
+
+    throw "Jaeger did not become ready within 60 seconds after reset."
+}
+
+function Wait-ForKafkaReady {
+    Write-Host "Waiting for Kafka to become healthy before warm-up..." -ForegroundColor Cyan
+    $deadline = (Get-Date).AddSeconds(120)
+    while ((Get-Date) -lt $deadline) {
+        try {
+            $health = docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' kafka 2>$null
+            if ($LASTEXITCODE -eq 0 -and $health -eq "healthy") {
+                return
+            }
+        } catch {
+            # Kafka may still be starting or restarting after the reset.
+        }
+        Start-Sleep -Seconds 2
+    }
+
+    throw "Kafka did not become healthy within 120 seconds after reset."
+}
+
 $modelsToRun = if ($Model -eq "all") { $modelNames } else { @($Model) }
 $scenariosToRun = if ($Scenario -eq "all") { @("baseline", "stress", "spike", "endurance", "edge") } else { @($Scenario) }
 $sessionName = Get-Date -Format "yyyy-MM-dd_HHmmss"
@@ -80,6 +115,9 @@ foreach ($currentModel in $modelsToRun) {
 
             & (Join-Path $PSScriptRoot "start-model.ps1") -Model $currentModel
             if ($LASTEXITCODE -ne 0) { throw "Model startup failed." }
+
+            Wait-ForKafkaReady
+            Wait-ForJaegerReady
 
             & (Join-Path $PSScriptRoot "warmup-model.ps1") -Model $currentModel -Requests $WarmupRequests
             if ($LASTEXITCODE -ne 0) { throw "Warm-up failed." }

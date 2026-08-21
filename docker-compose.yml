@@ -89,6 +89,8 @@ services:
     container_name: jaeger
     environment:
       COLLECTOR_OTLP_ENABLED: "true"
+      SPAN_STORAGE_TYPE: memory
+      MEMORY_MAX_TRACES: "10000"
     ports:
       - "16686:16686"
       - "4317:4317"
@@ -111,6 +113,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
     ports:
       - "9094:9094"
     healthcheck:
@@ -493,3 +497,4 @@ volumes:
   inventory_db_data:
   payment_db_data:
   notification_db_data:
+  kafka_data:

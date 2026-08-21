@@ -41,9 +41,9 @@ Jaeger UI: http://localhost:16686
 
 ## Final experiment workflow
 
-Final measurements must run one model at a time. Compose profiles isolate the selected order-service variant while reusing the databases, product, inventory, payment, notification, Kafka, and Jaeger infrastructure.
+Final measurements must run one model at a time. Compose profiles isolate the selected order-service variant while reusing the databases, product, inventory, payment, and notification infrastructure. Each repetition resets the five PostgreSQL databases, clears Kafka state, and recreates Jaeger so trace storage starts empty and bounded before a fresh warm-up.
 
-Reset the five PostgreSQL databases to the repository seed state, then start one model and warm it with exactly 20 successful order requests:
+Reset the five PostgreSQL databases to the repository seed state, clear Kafka state, recreate Jaeger, then start one model and warm it with exactly 20 successful order requests:
 
 ```powershell
 .\scripts\reset-experiment.ps1
