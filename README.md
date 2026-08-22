@@ -90,3 +90,19 @@ The supplementary smoke check exercises both transports, both shapes, all payloa
 ```
 
 Any load tool can call the endpoint repeatedly with different transport, shape, payload, and load settings. Latency, p95, throughput, and error rate come from the load tool; CPU and RAM can be sampled for the Order and Product Service containers with `docker stats` during each isolated run.
+
+The complete literature workflow uses one reusable implementation with three separate result sets:
+
+```powershell
+.\scripts\run-literature-benchmarks.ps1 -Set all -Runs 3
+```
+
+Use `-Set niswar`, `-Set jarmoszewicz`, or `-Set hamo` to run one source. Add `-Smoke` for the reduced six-run validation matrix (two Niswar request-count cases, one Jarmoszewicz case per protocol/payload pairing, and one Hamo case per protocol/payload pairing):
+
+```powershell
+.\scripts\run-literature-benchmarks.ps1 -Set all -Runs 1 -Smoke
+```
+
+Niswar uses exactly 100, 200, 300, 400, and 500 requests at one VU with the fixed 128-byte payload. Jarmoszewicz uses flat responses, 1,024-byte and 896,000-byte payloads at 10, 50, and 100 VU. Hamo uses flat responses and the existing 128-, 4,096-, and 65,536-byte payloads at 10, 50, and 100 VU. Load-controlled runs last 10 seconds by default; use `-DurationSeconds` to change this. Every run performs 10 read-only warm-up requests before sampling and measurement.
+
+Results never mix sources: each session stores raw files and per-set outputs under `results/literature/<timestamp>/<set>/raw/`. Resource samples are saved beside each k6 JSON result as `.resources.csv`, containing UTC timestamp, container, CPU percentage, and memory bytes for `order-service-rest` and `product-service`. The aggregator writes each set's `aggregated-results.csv` and `summary.csv`, plus the session-level `literature-comparison-summary.csv`.
