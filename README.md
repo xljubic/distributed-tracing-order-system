@@ -72,3 +72,21 @@ On Windows without Python, use the equivalent PowerShell aggregator:
 ```
 
 Both aggregators produce `raw-results.csv`, `aggregated-results.csv`, and `comparison.csv`. Use `.\scripts\trace-check.ps1` after representative runs to query the expected Jaeger service names and trace endpoints.
+
+## Supplementary literature benchmark
+
+The isolated literature benchmark uses the existing Order Service and Product Service without changing `POST /api/orders`. The client calls one of these endpoints on the running Order Service:
+
+```text
+GET /api/supplementary/literature/{transport}/{shape}/{payloadSize}
+```
+
+Use `rest` or `grpc` for `transport`, `flat` or `nested` for `shape`, and `small`, `medium`, or `large` for `payloadSize`. Product ID 1 is read from the existing deterministic Product Service seed data. Flat responses contain product fields and `payload`; nested responses contain the same product under `product` and payload metadata/data under `payload`. The fixed payload data sizes are 128, 4,096, and 65,536 ASCII characters respectively.
+
+The supplementary smoke check exercises both transports, both shapes, all payload sizes, and the unchanged order endpoint:
+
+```powershell
+.\scripts\smoke-literature-benchmark.ps1
+```
+
+Any load tool can call the endpoint repeatedly with different transport, shape, payload, and load settings. Latency, p95, throughput, and error rate come from the load tool; CPU and RAM can be sampled for the Order and Product Service containers with `docker stats` during each isolated run.

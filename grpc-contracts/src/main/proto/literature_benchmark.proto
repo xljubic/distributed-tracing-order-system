@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package literature;
+
+option java_multiple_files = true;
+option java_package = "com.aleksandar.microbench.literature.grpc";
+option java_outer_classname = "LiteratureBenchmarkProto";
+
+service LiteratureProductLookupService {
+  rpc GetFlatProduct (LiteratureProductRequest) returns (LiteratureFlatProductResponse);
+  rpc GetNestedProduct (LiteratureProductRequest) returns (LiteratureNestedProductResponse);
+}
+
+message LiteratureProductRequest {
+  int64 product_id = 1;
+  string payload_size = 2;
+}
+
+message LiteratureFlatProductResponse {
+  int64 id = 1;
+  string name = 2;
+  string category = 3;
+  string price = 4;
+  string payload = 5;
+}
+
+message LiteratureNestedProductResponse {
+  LiteratureProduct product = 1;
+  LiteraturePayload payload = 2;
+}
+
+message LiteratureProduct {
+  int64 id = 1;
+  string name = 2;
+  string category = 3;
+  string price = 4;
+}
+
+message LiteraturePayload {
+  string size = 1;
+  string data = 2;
+}

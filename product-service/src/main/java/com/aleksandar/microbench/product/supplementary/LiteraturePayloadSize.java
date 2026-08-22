@@ -1,0 +1,25 @@
+package com.aleksandar.microbench.product.supplementary;
+
+public enum LiteraturePayloadSize {
+    SMALL(128),
+    MEDIUM(4096),
+    LARGE(65536);
+
+    private final int characters;
+
+    LiteraturePayloadSize(int characters) {
+        this.characters = characters;
+    }
+
+    public int characters() {
+        return characters;
+    }
+
+    public static LiteraturePayloadSize parse(String value) {
+        try {
+            return valueOf(value.toUpperCase(java.util.Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Unsupported payload size: " + value, ex);
+        }
+    }
+}
