@@ -54,7 +54,18 @@ function Values($group, $property) {
     @($group | ForEach-Object { $value = $_.$property; if ($null -ne $value -and $value -ne "") { [double]::Parse([string]$value, $invariantCulture) } })
 }
 function MeanOrBlank($values) { if ($values.Count -gt 0) { ([Math]::Round(($values | Measure-Object -Average).Average, 6)).ToString("0.######", $invariantCulture) } else { "" } }
-function StdOrBlank($values) { if ($values.Count -gt 1) { ([Math]::Round((($values | Measure-Object -StandardDeviation).StandardDeviation), 6)).ToString("0.######", $invariantCulture) } else { "" } }
+function StdOrBlank($values) {
+    if ($values.Count -gt 1) {
+        $mean = ($values | Measure-Object -Average).Average
+        $sumSquaredDifferences = 0.0
+        foreach ($value in $values) {
+            $difference = [double]$value - $mean
+            $sumSquaredDifferences += $difference * $difference
+        }
+        $standardDeviation = [Math]::Sqrt($sumSquaredDifferences / ($values.Count - 1))
+        ([Math]::Round($standardDeviation, 6)).ToString("0.######", $invariantCulture)
+    } else { "" }
+}
 
 $aggregated = @()
 $rows | Group-Object model, scenario | ForEach-Object {
