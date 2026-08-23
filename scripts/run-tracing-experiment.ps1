@@ -160,7 +160,7 @@ function Reset-ModelEnvironment {
     Write-Host "[$Model] Starting order-service variant with tracing sampler config..." -ForegroundColor Cyan
     Invoke-Compose -Arguments @("--profile", $Model, "up", "-d", $config.Service)
 
-    $deadline = (Get-Date).AddSeconds(180)
+    $deadline = (Get-Date).AddSeconds(300)
     $ready = $false
     while ((Get-Date) -lt $deadline) {
         try {
@@ -170,7 +170,7 @@ function Reset-ModelEnvironment {
         Start-Sleep -Seconds 3
     }
     if (-not $ready) {
-        throw "[$Model] order-service did not become ready within 180 seconds."
+        throw "[$Model] order-service did not become ready within 300 seconds."
     }
 
     powershell -ExecutionPolicy Bypass -File "scripts/warmup-model.ps1" -Model $Model -Requests 10
