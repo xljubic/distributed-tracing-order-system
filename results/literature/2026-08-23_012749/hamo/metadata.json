@@ -1,0 +1,89 @@
+{
+    "payload_definitions_bytes":  {
+                                      "hamo-small":  14,
+                                      "hamo-medium":  153600,
+                                      "hamo-large":  3145728
+                                  },
+    "local_request_counts":  {
+                                 "hamo-small":  50000,
+                                 "hamo-medium":  20000,
+                                 "hamo-large":  2000
+                             },
+    "protocols":  [
+                      "rest",
+                      "grpc"
+                  ],
+    "shape_variants":  [
+                           "flat"
+                       ],
+    "source_request_counts":  {
+                                  "hamo-small":  500000,
+                                  "hamo-medium":  200000,
+                                  "hamo-large":  20000
+                              },
+    "aspects_differing":  [
+                              "request counts uniformly scaled to 10 percent for local thesis hardware",
+                              "400 VU omitted for the 3 MiB payload after pilot saturation",
+                              "Java/Spring implementation instead of Go",
+                              "isolated Order-to-Product read benchmark"
+                          ],
+    "target":  "Hamo and Saberian (2023)",
+    "experiment_set":  "hamo",
+    "expected_measured_runs":  84,
+    "timestamp":  "2026-08-23T00:10:07.7629601Z",
+    "load_definition":  "shared-iterations with fixed completed request count and configurable VUs",
+    "vu_levels_large":  [
+                            1,
+                            10,
+                            50,
+                            100
+                        ],
+    "cpu_ram_collection":  "docker stats sampled every 1 second during measured execution",
+    "warm_up_procedure":  "10 successful read-only requests excluded from measurement",
+    "repetitions":  3,
+    "aspects_matching_paper":  [
+                                   "HTTP/REST versus gRPC",
+                                   "14-byte payload",
+                                   "approximately 150 KiB payload",
+                                   "approximately 3 MiB payload",
+                                   "1, 10, 50 and 100 VU levels",
+                                   "400 VU retained for small and medium payloads",
+                                   "fixed total request-count design",
+                                   "latency",
+                                   "throughput",
+                                   "scalability"
+                               ],
+    "benchmark_architecture":  "Client -\u003e Order Service -\u003e Product Service",
+    "endpoint":  "/api/supplementary/literature/{transport}/{shape}/{payloadSize}",
+    "vu_levels_small":  [
+                            1,
+                            10,
+                            50,
+                            100,
+                            400
+                        ],
+    "run_duration":  "completion controlled",
+    "vu_levels_medium":  [
+                             1,
+                             10,
+                             50,
+                             100,
+                             400
+                         ],
+    "omitted_case":  "3 MiB payload at 400 VU",
+    "measured_metrics":  [
+                             "average latency",
+                             "median latency",
+                             "p95 latency",
+                             "throughput",
+                             "error rate",
+                             "CPU",
+                             "RAM"
+                         ],
+    "docker_containers":  [
+                              "order-service-rest",
+                              "product-service"
+                          ],
+    "request_count_scale_factor":  0.1,
+    "omitted_case_reason":  "Pilot test caused severe saturation in the local environment, approximately 50 percent failed requests, very high latency and interrupted iterations."
+}

@@ -1,0 +1,26 @@
+{
+    "timestamp":  "2026-08-21T14:59:35.8331189Z",
+    "git_commit":  "c6370e3689e41c1260d8cd6ad489a65c6111c4a4",
+    "repetitions":  5,
+    "warmup_requests":  20,
+    "models":  [
+                   "rest",
+                   "partial-grpc",
+                   "full-grpc",
+                   "async",
+                   "hybrid"
+               ],
+    "scenarios":  [
+                      "baseline",
+                      "stress",
+                      "spike",
+                      "endurance",
+                      "edge"
+                  ],
+    "java_version":  "unavailable",
+    "docker_version":  "29.4.3",
+    "k6_version":  "k6.exe v2.0.0 (commit/8c3be52cc1, go1.26.3, windows/amd64)",
+    "operating_system":  "Microsoft Windows 10.0.26200",
+    "execution_environment":  "local Docker Desktop",
+    "opentelemetry_jaeger_enabled":  true
+}

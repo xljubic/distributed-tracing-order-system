@@ -11,7 +11,7 @@ Set-Location $repoRoot
 
 $modelConfig = @{
     "rest" = @{ Service = "order-service-rest"; Endpoint = "http://localhost:8080" }
-    "partial-grpc" = @{ Service = "order-service-grpc"; Endpoint = "http://localhost:8090" }
+    "partial-grpc" = @{ Service = "order-service-partial-grpc"; Endpoint = "http://localhost:8090" }
     "full-grpc" = @{ Service = "order-service-full-grpc"; Endpoint = "http://localhost:8100" }
     "async" = @{ Service = "order-service-async"; Endpoint = "http://localhost:8110" }
     "hybrid" = @{ Service = "order-service-hybrid"; Endpoint = "http://localhost:8120" }
@@ -19,7 +19,7 @@ $modelConfig = @{
 $allProfiles = @("--profile", "rest", "--profile", "partial-grpc", "--profile", "full-grpc", "--profile", "async", "--profile", "hybrid")
 
 Write-Host "Stopping previously measured order-service variants..." -ForegroundColor Cyan
-foreach ($serviceName in @("order-service-rest", "order-service-grpc", "order-service-full-grpc", "order-service-async", "order-service-hybrid")) {
+foreach ($serviceName in @("order-service-rest", "order-service-partial-grpc", "order-service-full-grpc", "order-service-async", "order-service-hybrid")) {
     $containerId = docker compose @allProfiles ps -q $serviceName 2>$null
     if ($containerId) {
         docker stop $containerId | Out-Null

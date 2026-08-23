@@ -1,0 +1,87 @@
+# Override for the distributed-tracing experiment (Phase 6/16 of the thesis workflow).
+#
+# Usage (in addition to the base file and one model profile):
+#   docker compose -f docker-compose.yml -f docker-compose.tracing.yml --profile rest up -d --build
+#
+# What this override changes, and nothing else:
+#   1. Jaeger switches from in-memory storage to persistent Badger storage on a named
+#      volume, so traces survive a Jaeger container restart. Verified supported by the
+#      pinned jaegertracing/all-in-one:1.60 image (see scripts/verify-jaeger-persistence.ps1).
+#   2. Every traced Java service switches to a ParentBased trace-id-ratio sampler with a
+#      root ratio of 0. Unmarked background load (k6) therefore produces no traces, while
+#      controlled probe requests that already carry a sampled W3C traceparent header are
+#      preserved end-to-end, because ParentBased honors the incoming sampling decision.
+#      OTEL_TRACES_SAMPLER / OTEL_TRACES_SAMPLER_ARG are standard OpenTelemetry SDK
+#      autoconfigure variables, supported by the pinned opentelemetry-javaagent 2.25.0.
+services:
+  jaeger:
+    # jaegertracing/all-in-one runs as a non-root image user by default, which cannot
+    # create directories on a fresh named volume (owned by root). Running as root here
+    # only affects this local persistent-storage container, not the historical in-memory
+    # setup used for the completed 125-run/180-run experiments.
+    user: "0:0"
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+      SPAN_STORAGE_TYPE: badger
+      BADGER_EPHEMERAL: "false"
+      BADGER_DIRECTORY_VALUE: /badger/data
+      BADGER_DIRECTORY_KEY: /badger/key
+    volumes:
+      - jaeger_badger_data:/badger
+
+  product-service:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  inventory-service:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  payment-service:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  notification-service:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  order-service-rest:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  order-service-partial-grpc:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  order-service-full-grpc:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  order-service-async:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+  order-service-hybrid:
+    environment:
+      OTEL_TRACES_SAMPLER: parentbased_traceidratio
+      OTEL_TRACES_SAMPLER_ARG: "0"
+      OTEL_PROPAGATORS: tracecontext,baggage
+
+volumes:
+  jaeger_badger_data:

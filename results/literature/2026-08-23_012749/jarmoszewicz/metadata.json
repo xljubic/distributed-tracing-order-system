@@ -1,0 +1,60 @@
+{
+    "payload_definitions_bytes":  {
+                                      "small-1kb":  1024,
+                                      "large-875kb":  896000
+                                  },
+    "protocols":  [
+                      "rest",
+                      "grpc"
+                  ],
+    "shape_variants":  [
+                           "flat"
+                       ],
+    "run_duration_seconds":  60,
+    "aspects_differing":  [
+                              "isolated read benchmark rather than exact CRUD/image workload",
+                              "k6 instead of Gatling"
+                          ],
+    "target":  "Jarmoszewicz, Iwanowski and Plechawska-Wojcik (2024)",
+    "experiment_set":  "jarmoszewicz",
+    "expected_measured_runs":  36,
+    "timestamp":  "2026-08-22T23:31:19.1610752Z",
+    "warm_up_procedure":  "10 successful read-only requests excluded from measurement",
+    "repetitions":  3,
+    "aspects_matching_paper":  [
+                                   "Spring Boot microservices",
+                                   "REST versus gRPC",
+                                   "approximately 1 KB payload",
+                                   "approximately 875 KiB payload",
+                                   "60-second load scenarios",
+                                   "arrival-rate and active-user load styles",
+                                   "CPU",
+                                   "RAM",
+                                   "response time",
+                                   "throughput"
+                               ],
+    "benchmark_architecture":  "Client -\u003e Order Service -\u003e Product Service",
+    "load_profiles":  [
+                          "j1-low: 150 req/s",
+                          "j1-medium: 300 req/s",
+                          "j1-ramp: 100 -\u003e 1200 req/s",
+                          "j2-50: 50 active VUs",
+                          "j2-100: 100 active VUs",
+                          "j2-ramp: 2 -\u003e 100 active VUs"
+                      ],
+    "endpoint":  "/api/supplementary/literature/{transport}/{shape}/{payloadSize}",
+    "docker_containers":  [
+                              "order-service-rest",
+                              "product-service"
+                          ],
+    "cpu_ram_collection":  "docker stats sampled every 1 second during measured execution",
+    "measured_metrics":  [
+                             "average latency",
+                             "median latency",
+                             "p95 latency",
+                             "throughput",
+                             "error rate",
+                             "CPU",
+                             "RAM"
+                         ]
+}

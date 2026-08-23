@@ -1,0 +1,55 @@
+{
+    "payload_definitions_bytes":  {
+                                      "small":  128
+                                  },
+    "protocols":  [
+                      "rest",
+                      "grpc"
+                  ],
+    "shape_variants":  [
+                           "flat",
+                           "nested"
+                       ],
+    "expected_measured_runs":  60,
+    "aspects_differing":  [
+                              "GraphQL omitted",
+                              "isolated Order-to-Product read benchmark"
+                          ],
+    "target":  "Niswar et al. (2024)",
+    "experiment_set":  "niswar",
+    "timestamp":  "2026-08-22T23:27:49.6438685Z",
+    "load_definition":  "Exact completed request count using shared-iterations",
+    "vus":  1,
+    "warm_up_procedure":  "10 successful read-only requests excluded from measurement",
+    "repetitions":  3,
+    "aspects_matching_paper":  [
+                                   "REST versus gRPC",
+                                   "flat versus nested retrieval",
+                                   "100-500 request counts",
+                                   "response time",
+                                   "CPU utilization"
+                               ],
+    "benchmark_architecture":  "Client -\u003e Order Service -\u003e Product Service",
+    "endpoint":  "/api/supplementary/literature/{transport}/{shape}/{payloadSize}",
+    "docker_containers":  [
+                              "order-service-rest",
+                              "product-service"
+                          ],
+    "cpu_ram_collection":  "docker stats sampled every 1 second during measured execution",
+    "request_counts":  [
+                           100,
+                           200,
+                           300,
+                           400,
+                           500
+                       ],
+    "measured_metrics":  [
+                             "average latency",
+                             "median latency",
+                             "p95 latency",
+                             "throughput",
+                             "error rate",
+                             "CPU",
+                             "RAM"
+                         ]
+}

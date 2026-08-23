@@ -292,14 +292,14 @@ services:
       - "8080:8080"
     restart: unless-stopped
 
-  order-service-grpc:
+  order-service-partial-grpc:
     profiles: ["partial-grpc"]
     build:
       context: .
       dockerfile: Dockerfile
       args:
         MODULE: order-service
-    container_name: order-service-grpc
+    container_name: order-service-partial-grpc
     depends_on:
       order-db:
         condition: service_healthy
@@ -323,7 +323,7 @@ services:
       SERVICES_PAYMENT_SERVICE_URL: http://payment-service:8083
       SERVICES_NOTIFICATION_SERVICE_URL: http://notification-service:8084
       JAVA_TOOL_OPTIONS: "-javaagent:/otel/opentelemetry-javaagent.jar"
-      OTEL_SERVICE_NAME: order-service-grpc
+      OTEL_SERVICE_NAME: order-service-partial-grpc
       OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
       OTEL_TRACES_EXPORTER: otlp

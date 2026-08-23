@@ -1,0 +1,171 @@
+{
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "invalid product returns controlled client/server response": {
+                    "name": "invalid product returns controlled client/server response",
+                    "path": "::invalid product returns controlled client/server response",
+                    "id": "a477808a6b64a7786b43ac9f9af1ecf6",
+                    "passes": 197,
+                    "fails": 0
+                },
+                "invalid product does not timeout": {
+                    "passes": 197,
+                    "fails": 0,
+                    "name": "invalid product does not timeout",
+                    "path": "::invalid product does not timeout",
+                    "id": "02d376ba3d193582b53f5323bbffc47b"
+                },
+                "payment failure returns controlled response": {
+                    "id": "76bb930df162a540e0975037603b57ec",
+                    "passes": 196,
+                    "fails": 0,
+                    "name": "payment failure returns controlled response",
+                    "path": "::payment failure returns controlled response"
+                },
+                "payment failure does not timeout": {
+                    "passes": 196,
+                    "fails": 0,
+                    "name": "payment failure does not timeout",
+                    "path": "::payment failure does not timeout",
+                    "id": "e5c99fe7e4ec3bb291dcbd45aead6f74"
+                },
+                "insufficient stock returns controlled client/server response": {
+                    "path": "::insufficient stock returns controlled client/server response",
+                    "id": "f6541aa16c2f848464765b9649b35431",
+                    "passes": 197,
+                    "fails": 0,
+                    "name": "insufficient stock returns controlled client/server response"
+                },
+                "insufficient stock does not timeout": {
+                    "path": "::insufficient stock does not timeout",
+                    "id": "1adfbbabb4ec6b7b5a8ae60be3e51144",
+                    "passes": 197,
+                    "fails": 0,
+                    "name": "insufficient stock does not timeout"
+                }
+            }
+    },
+    "metrics": {
+        "http_req_receiving": {
+            "avg": 0.17460644067796618,
+            "min": 0,
+            "med": 0,
+            "max": 3.5767,
+            "p(90)": 0.5520400000000001,
+            "p(95)": 0.775834999999999
+        },
+        "http_reqs": {
+            "count": 590,
+            "rate": 4.877642196042824
+        },
+        "http_req_waiting": {
+            "p(90)": 41.916320000000006,
+            "p(95)": 50.00176499999998,
+            "avg": 22.423318135593192,
+            "min": 4.7469,
+            "med": 17.781550000000003,
+            "max": 77.5295
+        },
+        "vus_max": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "checks": {
+            "passes": 1180,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "data_received": {
+            "count": 124912,
+            "rate": 1032.6712576137309
+        },
+        "http_req_duration": {
+            "med": 18.267699999999998,
+            "max": 77.6496,
+            "p(90)": 42.7128,
+            "p(95)": 50.55659999999999,
+            "avg": 22.71454338983049,
+            "min": 4.7469,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 590,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "iteration_duration": {
+            "avg": 1024.8785306779657,
+            "min": 1005.9544,
+            "med": 1021.17245,
+            "max": 1094.9872,
+            "p(90)": 1045.65423,
+            "p(95)": 1052.0129849999998
+        },
+        "iterations": {
+            "rate": 4.877642196042824,
+            "count": 590
+        },
+        "vus": {
+            "min": 5,
+            "max": 5,
+            "value": 5
+        },
+        "http_req_connecting": {
+            "avg": 0.9575654237288136,
+            "min": 0,
+            "med": 0.6010500000000001,
+            "max": 15.2986,
+            "p(90)": 1.73055,
+            "p(95)": 2.1544099999999995
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(95)": 50.55659999999999,
+            "avg": 22.71454338983049,
+            "min": 4.7469,
+            "med": 18.267699999999998,
+            "max": 77.6496,
+            "p(90)": 42.7128
+        },
+        "data_sent": {
+            "count": 104236,
+            "rate": 861.7388338079995
+        },
+        "http_req_sending": {
+            "avg": 0.11661881355932205,
+            "min": 0,
+            "med": 0,
+            "max": 5.373,
+            "p(90)": 0.53793,
+            "p(95)": 0.6571299999999994
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_blocked": {
+            "med": 0.6801,
+            "max": 15.2986,
+            "p(90)": 1.8834500000000003,
+            "p(95)": 2.8625249999999998,
+            "avg": 1.1454027118644075,
+            "min": 0
+        }
+    }
+}

@@ -1,0 +1,3 @@
+timestamp_utc,container,cpu_percent,memory_bytes
+2026-08-22T23:28:44.7844692Z,order-service-rest,0.11,3236257858
+2026-08-22T23:28:44.7844692Z,product-service,0.11,2314987373

@@ -277,14 +277,56 @@ foreach ($paper in $setNames) {
             $failed =
                 $summary.metrics.PSObject.Properties["http_req_failed"].Value
 
+            # k6's exported http_req_failed is a Rate metric shaped as
+            # { fails, passes, thresholds, value }, not { rate } or { values: { rate } }.
+            # "passes" counts occurrences where the boolean metric was true (i.e. the
+            # request failed), so value = passes / (passes + fails).
+            $rawFailedPasses = $null
+            $rawFailedFails = $null
+
+            if ($null -ne $failed) {
+                $passesProperty = $failed.PSObject.Properties["passes"]
+                $failsProperty = $failed.PSObject.Properties["fails"]
+
+                if ($null -ne $passesProperty) {
+                    $rawFailedPasses = [double]$passesProperty.Value
+                }
+
+                if ($null -ne $failsProperty) {
+                    $rawFailedFails = [double]$failsProperty.Value
+                }
+            }
+
             $errorRate = if ($null -eq $failed) {
                 0.0
             } else {
-                Get-Number $failed "rate"
+                $directValue = Get-Number $failed "value"
+
+                if ($null -ne $directValue) {
+                    $directValue
+                } elseif (
+                    $null -ne $rawFailedPasses -and
+                    $null -ne $rawFailedFails -and
+                    ($rawFailedPasses + $rawFailedFails) -gt 0
+                ) {
+                    $rawFailedPasses / ($rawFailedPasses + $rawFailedFails)
+                } else {
+                    $null
+                }
             }
 
             if ($null -eq $errorRate) {
                 $errorRate = 0.0
+            }
+
+            # Guard against a future k6 metric-shape change silently collapsing a real
+            # failure rate back to zero: raw failed-request counters must agree with it.
+            if (
+                $null -ne $rawFailedPasses -and
+                $rawFailedPasses -gt 0 -and
+                $errorRate -le 0.0
+            ) {
+                throw "Aggregation inconsistency in $($_.Name): raw http_req_failed shows $rawFailedPasses failed request(s) but the computed error rate is 0. Check the k6 summary JSON metric shape."
             }
 
             $resourcesPath =

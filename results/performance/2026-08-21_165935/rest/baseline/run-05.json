@@ -1,0 +1,150 @@
+{
+    "metrics": {
+        "http_req_duration": {
+            "p(95)": 108.1470899999999,
+            "avg": 57.71738760984187,
+            "min": 20.8558,
+            "med": 51.2351,
+            "max": 276.7879,
+            "p(90)": 85.91796000000001,
+            "thresholds": {
+                "p(95)<2000": false
+            }
+        },
+        "http_reqs": {
+            "count": 1138,
+            "rate": 9.404494647484348
+        },
+        "vus_max": {
+            "value": 10,
+            "min": 10,
+            "max": 10
+        },
+        "http_req_blocked": {
+            "max": 22.7204,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.21390694200351493,
+            "min": 0,
+            "med": 0
+        },
+        "http_req_sending": {
+            "min": 0,
+            "med": 0,
+            "max": 2.0067,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.015415992970123025
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 1138,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "data_sent": {
+            "count": 196874,
+            "rate": 1626.9775740147923
+        },
+        "data_received": {
+            "count": 441663,
+            "rate": 3649.927345774938
+        },
+        "http_req_waiting": {
+            "p(90)": 85.4967,
+            "p(95)": 106.7783249999999,
+            "avg": 57.46911836555368,
+            "min": 20.8558,
+            "med": 51.07885,
+            "max": 276.2174
+        },
+        "iterations": {
+            "count": 1138,
+            "rate": 9.404494647484348
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 85.91796000000001,
+            "p(95)": 108.1470899999999,
+            "avg": 57.71738760984187,
+            "min": 20.8558,
+            "med": 51.2351,
+            "max": 276.7879
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_receiving": {
+            "max": 7.5466,
+            "p(90)": 0.5651800000000001,
+            "p(95)": 1.0460649999999996,
+            "avg": 0.23285325131810194,
+            "min": 0,
+            "med": 0
+        },
+        "checks": {
+            "passes": 3414,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 10
+        },
+        "iteration_duration": {
+            "avg": 1058.7795114235491,
+            "min": 1021.1595,
+            "med": 1052.14355,
+            "max": 1300.8304,
+            "p(90)": 1086.77597,
+            "p(95)": 1110.016875
+        },
+        "http_req_connecting": {
+            "avg": 0.0309798769771529,
+            "min": 0,
+            "med": 0,
+            "max": 14.9452,
+            "p(90)": 0,
+            "p(95)": 0
+        }
+    },
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "status is successful 2xx": {
+                    "path": "::status is successful 2xx",
+                    "id": "968a7a822293cd3c52533638eb2856d0",
+                    "passes": 1138,
+                    "fails": 0,
+                    "name": "status is successful 2xx"
+                },
+                "order is completed": {
+                    "name": "order is completed",
+                    "path": "::order is completed",
+                    "id": "aeba5f156f13ec31d6f7904875a807f8",
+                    "passes": 1138,
+                    "fails": 0
+                },
+                "response has order id": {
+                    "path": "::response has order id",
+                    "id": "456bc43a6baff7439665a1b4724d37c3",
+                    "passes": 1138,
+                    "fails": 0,
+                    "name": "response has order id"
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}

@@ -1,0 +1,150 @@
+{
+    "metrics": {
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "iterations": {
+            "count": 8677,
+            "rate": 48.060819276884104
+        },
+        "iteration_duration": {
+            "p(95)": 1363.44692,
+            "avg": 1114.3974117782725,
+            "min": 1011.992,
+            "med": 1063.0967,
+            "max": 2473.898,
+            "p(90)": 1265.97426
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 8677,
+            "thresholds": {
+                "rate<0.10": false
+            },
+            "value": 0
+        },
+        "http_req_sending": {
+            "med": 0,
+            "max": 3.2248,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.00989961968422266,
+            "min": 0
+        },
+        "checks": {
+            "passes": 26031,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.90": false
+            },
+            "value": 1
+        },
+        "http_req_waiting": {
+            "avg": 112.47565907571749,
+            "min": 11.2619,
+            "med": 61.7991,
+            "max": 1473.0247,
+            "p(90)": 262.0472000000002,
+            "p(95)": 359.20009999999974
+        },
+        "data_sent": {
+            "rate": 8314.521734900949,
+            "count": 1501121
+        },
+        "http_req_receiving": {
+            "avg": 1.1230362567707741,
+            "min": 0,
+            "med": 0,
+            "max": 83.6153,
+            "p(90)": 2.7263800000000002,
+            "p(95)": 5.567459999999997
+        },
+        "http_req_blocked": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.02199940071453267,
+            "min": 0,
+            "med": 0,
+            "max": 23.1547
+        },
+        "vus_max": {
+            "value": 100,
+            "min": 100,
+            "max": 100
+        },
+        "data_received": {
+            "count": 3380482,
+            "rate": 18724.06758911602
+        },
+        "http_req_connecting": {
+            "avg": 0.017713149706119626,
+            "min": 0,
+            "med": 0,
+            "max": 23.1547,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_reqs": {
+            "count": 8677,
+            "rate": 48.060819276884104
+        },
+        "http_req_duration": {
+            "med": 62.3727,
+            "max": 1473.0247,
+            "p(90)": 265.0415000000002,
+            "p(95)": 362.87077999999997,
+            "avg": 113.60859495217214,
+            "min": 11.2619,
+            "thresholds": {
+                "p(95)<5000": false
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 62.3727,
+            "max": 1473.0247,
+            "p(90)": 265.0415000000002,
+            "p(95)": 362.87077999999997,
+            "avg": 113.60859495217214,
+            "min": 11.2619
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 100
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "status is successful 2xx": {
+                    "name": "status is successful 2xx",
+                    "path": "::status is successful 2xx",
+                    "id": "968a7a822293cd3c52533638eb2856d0",
+                    "passes": 8677,
+                    "fails": 0
+                },
+                "order is completed": {
+                    "passes": 8677,
+                    "fails": 0,
+                    "name": "order is completed",
+                    "path": "::order is completed",
+                    "id": "aeba5f156f13ec31d6f7904875a807f8"
+                },
+                "response has order id": {
+                    "name": "response has order id",
+                    "path": "::response has order id",
+                    "id": "456bc43a6baff7439665a1b4724d37c3",
+                    "passes": 8677,
+                    "fails": 0
+                }
+            }
+    }
+}

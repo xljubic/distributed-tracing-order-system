@@ -1,0 +1,171 @@
+{
+    "metrics": {
+        "http_reqs": {
+            "count": 584,
+            "rate": 4.8291322882716745
+        },
+        "data_sent": {
+            "count": 103176,
+            "rate": 853.1687550936957
+        },
+        "http_req_duration": {
+            "avg": 30.677620719178073,
+            "min": 5.4344,
+            "med": 18.40945,
+            "max": 511.0384,
+            "p(90)": 49.30194,
+            "p(95)": 71.99567500000002,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "http_req_connecting": {
+            "avg": 1.0005597602739735,
+            "min": 0,
+            "med": 0.84165,
+            "max": 17.4516,
+            "p(90)": 1.5851500000000012,
+            "p(95)": 1.9107400000000003
+        },
+        "vus": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "checks": {
+            "passes": 1168,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.95": false
+            },
+            "value": 1
+        },
+        "http_req_waiting": {
+            "max": 511.0384,
+            "p(90)": 49.14785,
+            "p(95)": 70.86331500000004,
+            "avg": 30.349388869863038,
+            "min": 5.2562,
+            "med": 18.33625
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "data_received": {
+            "count": 123642,
+            "rate": 1022.4033807987781
+        },
+        "vus_max": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "iterations": {
+            "count": 584,
+            "rate": 4.8291322882716745
+        },
+        "http_req_blocked": {
+            "avg": 1.2747470890410977,
+            "min": 0,
+            "med": 0.8795,
+            "max": 24.1604,
+            "p(90)": 1.70171,
+            "p(95)": 1.9992800000000002
+        },
+        "http_req_receiving": {
+            "med": 0,
+            "max": 8.1594,
+            "p(90)": 0.5470700000000001,
+            "p(95)": 0.7695450000000003,
+            "avg": 0.1952895547945206,
+            "min": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 49.30194,
+            "p(95)": 71.99567500000002,
+            "avg": 30.677620719178073,
+            "min": 5.4344,
+            "med": 18.40945,
+            "max": 511.0384
+        },
+        "http_req_sending": {
+            "min": 0,
+            "med": 0,
+            "max": 2.4786,
+            "p(90)": 0.5916,
+            "p(95)": 0.7471400000000002,
+            "avg": 0.13294229452054787
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 584,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "iteration_duration": {
+            "avg": 1033.002814212329,
+            "min": 1006.4361,
+            "med": 1020.3703,
+            "max": 1516.9329,
+            "p(90)": 1053.43961,
+            "p(95)": 1076.95859
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "invalid product returns controlled client/server response": {
+                    "name": "invalid product returns controlled client/server response",
+                    "path": "::invalid product returns controlled client/server response",
+                    "id": "a477808a6b64a7786b43ac9f9af1ecf6",
+                    "passes": 195,
+                    "fails": 0
+                },
+                "invalid product does not timeout": {
+                    "path": "::invalid product does not timeout",
+                    "id": "02d376ba3d193582b53f5323bbffc47b",
+                    "passes": 195,
+                    "fails": 0,
+                    "name": "invalid product does not timeout"
+                },
+                "payment failure returns controlled response": {
+                    "fails": 0,
+                    "name": "payment failure returns controlled response",
+                    "path": "::payment failure returns controlled response",
+                    "id": "76bb930df162a540e0975037603b57ec",
+                    "passes": 194
+                },
+                "payment failure does not timeout": {
+                    "path": "::payment failure does not timeout",
+                    "id": "e5c99fe7e4ec3bb291dcbd45aead6f74",
+                    "passes": 194,
+                    "fails": 0,
+                    "name": "payment failure does not timeout"
+                },
+                "insufficient stock returns controlled client/server response": {
+                    "name": "insufficient stock returns controlled client/server response",
+                    "path": "::insufficient stock returns controlled client/server response",
+                    "id": "f6541aa16c2f848464765b9649b35431",
+                    "passes": 195,
+                    "fails": 0
+                },
+                "insufficient stock does not timeout": {
+                    "passes": 195,
+                    "fails": 0,
+                    "name": "insufficient stock does not timeout",
+                    "path": "::insufficient stock does not timeout",
+                    "id": "1adfbbabb4ec6b7b5a8ae60be3e51144"
+                }
+            }
+    }
+}

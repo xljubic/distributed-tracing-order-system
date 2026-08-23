@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $allProfiles = @("--profile", "rest", "--profile", "partial-grpc", "--profile", "full-grpc", "--profile", "async", "--profile", "hybrid")
-$orderServices = @("order-service-rest", "order-service-grpc", "order-service-full-grpc", "order-service-async", "order-service-hybrid")
+$orderServices = @("order-service-rest", "order-service-partial-grpc", "order-service-full-grpc", "order-service-async", "order-service-hybrid")
 $databaseServices = @("product-db", "order-db", "inventory-db", "payment-db", "notification-db")
 $applicationServices = @("product-service", "inventory-service", "payment-service", "notification-service")
 $jaegerService = @("jaeger")

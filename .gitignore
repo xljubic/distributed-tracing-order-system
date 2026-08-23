@@ -21,8 +21,16 @@ Thumbs.db
 data/
 
 # k6 / results generated later
+# Track canonical results/performance and results/literature; ignore smoke and raw tracing working dirs
 results/*
-!results/.gitkeep
+!results/README.md
+!results/performance/
+!results/performance/**
+!results/literature/
+!results/literature/**
+results/tracing/smoke/**
+results/tracing/final/*/raw/**
+!results/tracing/final/**
 
 # OpenTelemetry Java agent binary
 otel/opentelemetry-javaagent.jar

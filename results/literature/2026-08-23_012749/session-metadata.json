@@ -1,0 +1,15 @@
+{
+    "timestamp":  "2026-08-23T01:41:50.9540180Z",
+    "experiment_sets":  [
+                            "niswar",
+                            "jarmoszewicz",
+                            "hamo"
+                        ],
+    "expected_total_runs":  180,
+    "successful_runs":  180,
+    "smoke":  false,
+    "repetitions":  3,
+    "warmup_requests":  10,
+    "git_commit":  "30d79c36503447059ed2a95cc2b1a9698b602561",
+    "branch":  "literature-benchmark"
+}
